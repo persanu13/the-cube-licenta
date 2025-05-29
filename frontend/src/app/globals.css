@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --tuatara-900: #383838;
+  --tuatara-400: #888888;
+  --carnation-300: #ffa0a0;
+  --carnation-400: #ff6868;
+  --carnation-500: #f83b3b;
+  --carnation-600: #e51d1d;
+  --charade-950: #292b36;
+  --broom-200: #fffa89;
+  --broom-300: #feed2f;
+  --broom-400: #fbdf14;
+  --spring-white: #fdfdfd;
+  --spring-wood-100: #f6f2de;
+  --spring-wood-200: #ebe1bd;
+  --bej-50: #f9f7f3;
+  --bej-100: #f1ede3;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-tuatara-900: var(--tuatara-900);
+  --color-tuatara-400: var(--tuatara-400);
+  --color-carnation-300: var(--carnation-300);
+  --color-carnation-400: var(--carnation-400);
+  --color-carnation-500: var(--carnation-500);
+  --color-carnation-600: var(--carnation-600);
+  --color-charade-950: var(--charade-950);
+  --color-broom-200: var(--broom-200);
+  --color-broom-300: var(--broom-300);
+  --color-broom-400: var(--broom-400);
+  --color-spring-white: var(--spring-white);
+  --color-spring-wood-100: var(--spring-wood-100);
+  --color-spring-wood-200: var(--spring-wood-200);
+  --color-bej-50: var(--bej-50);
+  --color-bej-100: var(--bej-100);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-jost: var(--font-jost);
+  --font-hanuman: var(--font-hanuman);
+  --font-inter: var(--font-inter);
+  --shadow-red: inset 4px 4px 0px 0px var(--spring-white),
+    5px 5px 0px -1px var(--carnation-400);
+  --shadow-yellow: inset 4px 4px 0px 0px var(--spring-white),
+    5px 5px 0px -1px var(--color-broom-300);
+  --shadow-glow-carnation: 0px 0px 4px 1px var(--carnation-400);
+  --animate-left-right: left-right 2s ease-in-out infinite alternate;
+  @keyframes left-right {
+    0% {
+      transform: translateX(-10px);
+    }
+    50% {
+      transform: translateX(0px);
+    }
+    100% {
+      transform: translateX(-10px);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background-color: var(--spring-white);
+}
