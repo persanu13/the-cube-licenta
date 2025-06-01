@@ -11,16 +11,15 @@ const authMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  let token = null;
   const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(
+      new UnauthorizedException("Unauthorized", ErrorCodes.UNAUTHORIZED)
+    );
   }
 
-  if (!token && req.cookies) {
-    token = req.cookies.token;
-  }
-
+  const token = authHeader.split(" ")[1];
   if (!token) {
     return next(
       new UnauthorizedException("Unauthorized", ErrorCodes.UNAUTHORIZED)
@@ -28,6 +27,16 @@ const authMiddleware = async (
   }
 
   try {
+    const isBlacklisted = await prismaClient.blacklistedToken.findFirst({
+      where: { token },
+    });
+
+    if (isBlacklisted) {
+      return next(
+        new UnauthorizedException("Unauthorized", ErrorCodes.UNAUTHORIZED)
+      );
+    }
+
     const payload = jwt.verify(token, JWT_SECRET) as any;
 
     const user = await prismaClient.user.findFirst({
@@ -40,8 +49,8 @@ const authMiddleware = async (
       );
     }
     user.password = "";
-    user.role = payload.role;
     req.user = user;
+    req.token = token;
 
     next();
   } catch (error) {

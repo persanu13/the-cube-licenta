@@ -49,6 +49,15 @@ model User {
   @@map("users")
 }
 
+model BlacklistedToken {
+  id        String   @id @default(cuid())
+  token     String   @db.Text
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+}
+
 model Lesson {
   id          Int    @id @default(autoincrement())
   name        String

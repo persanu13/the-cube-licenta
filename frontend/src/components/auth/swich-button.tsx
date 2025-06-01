@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/ui/Button";
+import Button from "@/components/common/Button";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 export function SwichButton({

@@ -2,13 +2,14 @@ import GithubButton from "@/components/auth/github-button";
 import LoginForm from "@/components/auth/login-form";
 import RegisterForm from "@/components/auth/register-form";
 import { SwichButton } from "@/components/auth/swich-button";
-import { getAuth } from "@/lib/auth/get-auth";
-import Logo from "@/ui/logo";
+import Logo from "@/components/common/logo";
+import { getAuth } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 
 export default async function AuthPage(props: {
   searchParams?: Promise<{
     tab?: string;
+    error?: string;
   }>;
 }) {
   const auth = await getAuth();
@@ -22,6 +23,7 @@ export default async function AuthPage(props: {
 
   const searchParams = await props.searchParams;
   const tab = searchParams?.tab || "login";
+  const error = searchParams?.error || "";
   const swich = tab == "register";
   return (
     <main className="flex flex-col items-center h-screen   ">
@@ -32,7 +34,10 @@ export default async function AuthPage(props: {
           <h2 className="text-xl mt-3 font-jost">Log in your Account</h2>
           {!swich ? (
             <div className="flex flex-col mt-5 ">
-              {/* <GithubButton /> */}
+              <GithubButton />
+              <p className="mt-1 text-sm font-hanuman font-light text-carnation-600">
+                {error}
+              </p>
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t-[1.5px] border-tuatara-400" />
@@ -58,8 +63,7 @@ export default async function AuthPage(props: {
           {!swich ? (
             <SwichButton tab="register" text="CREATE ACCOUNT" />
           ) : (
-            <p>ceva</p>
-            // <RegisterForm />
+            <RegisterForm />
           )}
         </div>
       </div>

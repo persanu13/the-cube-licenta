@@ -13,11 +13,11 @@ import authMiddleware from "../middlewares/auth";
 const authRoutes: Router = Router();
 
 authRoutes.post("/signup", errorHandler(signUp));
-authRoutes.post("/signout", errorHandler(signOut));
+authRoutes.post("/signout", [authMiddleware], errorHandler(signOut));
 authRoutes.post("/signin", errorHandler(signIn));
 
-authRoutes.get("/github", errorHandler(githubAuth));
-authRoutes.get("/github/callback", errorHandler(githubAuthCallback));
+authRoutes.get("/github", githubAuth);
+authRoutes.get("/github/callback", githubAuthCallback);
 
 authRoutes.get("/me", [authMiddleware], errorHandler(me));
 

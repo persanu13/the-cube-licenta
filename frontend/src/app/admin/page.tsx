@@ -1,10 +1,7 @@
-import { LogoutButton } from "@/components/auth/logout-button";
-
-export default async function AdminPage() {
+export default async function Dashboard() {
   return (
     <div>
-      <h1>Admin</h1>
-      <LogoutButton />
+      <h1>Dashboard</h1>
     </div>
   );
 }

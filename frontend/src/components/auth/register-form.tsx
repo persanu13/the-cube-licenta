@@ -4,12 +4,12 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useActionState } from "react";
 
 import { State } from "@/lib/models/types";
-import AuthInput from "@/ui/AuthInput";
-import Button from "@/ui/Button";
-import { signUp } from "@/lib/actions/user";
+import AuthInput from "@/components/common/AuthInput";
+import Button from "@/components/common/Button";
+import signUp from "@/lib/actions/user";
 
 export default function RegisterForm() {
-  const initialState: State = { message: null, errors: {} };
+  const initialState: State = { message: null };
   const [state, formAction, isPending] = useActionState(signUp, initialState);
   return (
     <form action={formAction}>
@@ -22,6 +22,7 @@ export default function RegisterForm() {
             icon="user"
             required={true}
             type="text"
+            defaultValue={state.values?.name}
             errors={state.errors?.name}
           />
           <AuthInput
@@ -31,6 +32,7 @@ export default function RegisterForm() {
             icon="at"
             required={true}
             type="email"
+            defaultValue={state.values?.email}
             errors={state.errors?.email}
           />
           <AuthInput

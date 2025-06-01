@@ -1,11 +1,23 @@
 import { LogoutButton } from "@/components/auth/logout-button";
-import { getAuth } from "@/lib/auth/get-auth";
+import Panel from "@/geometry_2d/components/panel";
+import { PanelState } from "@/geometry_2d/Interfaces/types";
+import {
+  generateRandomPoint,
+  generateRandomPoints,
+} from "@/geometry_2d/lib/utility/generate";
+
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
+const PANEL: PanelState = {
+  id: "cadsfasddsa234",
+  width: 300,
+  height: 300,
+  name: "Triangle",
+  shapesData: generateRandomPoints(1000),
+};
+
 export default async function Home() {
-  const auth = await getAuth();
-  console.log(auth);
   return (
     <div>
       <LogoutButton />
@@ -15,6 +27,7 @@ export default async function Home() {
       >
         <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
       </Link>
+      <Panel panel={PANEL} />
     </div>
   );
 }

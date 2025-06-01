@@ -5,14 +5,14 @@ import * as jwt from "jsonwebtoken";
 import {
   AUTH_GITHUB_ID,
   AUTH_GITHUB_SECRET,
+  CLIENT_URL,
   JWT_SECRET,
   SERVER_URL,
 } from "../secrets";
 import { BadRequestException } from "../exceptions/bad-request";
-import { ErrorCodes } from "../exceptions/root";
+import { ErrorCodes, HttpException } from "../exceptions/root";
 import { LoginSchema, SignUpSchema } from "../schema/user";
 import { NotFoundException } from "../exceptions/not-found";
-import axios from "axios";
 
 //Sign up functie de creare cont
 export const signUp = async (
@@ -58,8 +58,8 @@ export const signIn = async (req: Request, res: Response) => {
 
   if (!user.password) {
     throw new BadRequestException(
-      "Email used with oAuth!",
-      ErrorCodes.EMAIL_USED_WITH_OAUTH
+      "Email already used with oAuth account!",
+      ErrorCodes.USER_ALREADY_EXISTS
     );
   }
 
@@ -75,13 +75,6 @@ export const signIn = async (req: Request, res: Response) => {
   });
 
   const { password: _password, ...safeUser } = user;
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24 * 30,
-  });
   res.json({ user: safeUser, token });
 };
 
@@ -97,99 +90,130 @@ export const githubAuth = async (req: Request, res: Response) => {
 
 // githubAuthCallback functie care te logheaza folosind tokenul de la github
 export const githubAuthCallback = async (req: Request, res: Response) => {
-  const code = req.query.code as string;
-  if (!code) {
-    throw new NotFoundException(
-      "GithHub user not found!",
-      ErrorCodes.USER_NOT_FOUND
-    );
-  }
-
-  const response = await axios.post(
-    "https://github.com/login/oauth/access_token",
-    {
-      client_id: AUTH_GITHUB_ID,
-      client_secret: AUTH_GITHUB_SECRET,
-      code,
-    },
-    {
-      headers: { Accept: "application/json" },
+  try {
+    const code = req.query.code as string;
+    if (!code) {
+      throw new NotFoundException(
+        "GithHub user not found!",
+        ErrorCodes.USER_NOT_FOUND
+      );
     }
-  );
 
-  const access_token = response.data.access_token;
-
-  const userRes = await axios.get("https://api.github.com/user", {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
-
-  const githubUser = userRes.data;
-
-  let user = await prismaClient.user.findFirst({
-    where: {
-      accounts: {
-        some: {
-          provider: "github",
-          providerAccountId: String(githubUser.id),
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    const githubEmailsRes = await axios.get(
-      "https://api.github.com/user/emails",
+    const response = await fetch(
+      "https://github.com/login/oauth/access_token",
       {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          client_id: AUTH_GITHUB_ID,
+          client_secret: AUTH_GITHUB_SECRET,
+          code,
+        }),
       }
     );
-    const githubEmails = githubEmailsRes.data;
 
-    const email = githubEmails.find((e: any) => e.primary && e.verified)?.email;
+    const data = await response.json();
+    const access_token = data.access_token;
 
-    user = await prismaClient.user.create({
-      data: {
-        name: githubUser.name,
-        email: email,
-        image: githubUser.avatar_url,
+    const userRes = await fetch("https://api.github.com/user", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        Accept: "application/json",
+      },
+    });
+
+    const githubUser = await userRes.json();
+
+    let user = await prismaClient.user.findFirst({
+      where: {
         accounts: {
-          create: {
+          some: {
             provider: "github",
             providerAccountId: String(githubUser.id),
-            access_token,
-            type: "oauth",
           },
         },
       },
     });
+
+    if (!user) {
+      const githubEmailsRes = await fetch(
+        "https://api.github.com/user/emails",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+            Accept: "application/vnd.github+json",
+          },
+        }
+      );
+
+      const githubEmails = await githubEmailsRes.json();
+      const email = githubEmails.find(
+        (e: any) => e.primary && e.verified
+      )?.email;
+
+      user = await prismaClient.user.findFirst({
+        where: { email: email },
+      });
+
+      if (user) {
+        throw new NotFoundException(
+          "Email already used with a credential account.",
+          ErrorCodes.USER_ALREADY_EXISTS
+        );
+      }
+
+      user = await prismaClient.user.create({
+        data: {
+          name: githubUser.name,
+          email: email,
+          image: githubUser.avatar_url,
+          accounts: {
+            create: {
+              provider: "github",
+              providerAccountId: String(githubUser.id),
+              access_token,
+              type: "oauth",
+            },
+          },
+        },
+      });
+    }
+
+    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
+      expiresIn: user.role === "ADMIN" ? "1h" : "30d",
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: user.role === "ADMIN" ? 3600000 : 30 * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
+  } catch (e) {
+    if (e instanceof HttpException) {
+      res.redirect(`${CLIENT_URL}/auth?error=${e.errorCode}`);
+    } else {
+      res.redirect(`${CLIENT_URL}/auth?error=Unknown_error`);
+    }
   }
-
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
-    expiresIn: user.role === "ADMIN" ? "1h" : "30d",
-  });
-
-  const { password: _password, ...safeUser } = user;
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24 * 30,
-  });
-  res.json({ user: safeUser, token });
+  res.redirect(`${CLIENT_URL}/auth`);
 };
 
 // signOut functie care sterge tokenul
 export const signOut = async (req: Request, res: Response) => {
-  res.cookie("token", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 0,
+  const token = req.token!;
+  const decoded = jwt.decode(token) as { exp: number };
+  const expiresAt = new Date(decoded?.exp * 1000);
+  await prismaClient.blacklistedToken.create({
+    data: {
+      token,
+      expiresAt,
+    },
   });
   res.json({ message: "Successfully signed out." });
 };

@@ -1,12 +1,11 @@
 "use client";
 
-import { signIn } from "@/lib/auth/signin";
 import { State } from "@/lib/models/types";
-import AuthInput from "@/ui/AuthInput";
-import Button from "@/ui/Button";
+import AuthInput from "@/components/common/AuthInput";
+import Button from "@/components/common/Button";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-
 import { useActionState } from "react";
+import { signIn } from "@/lib/auth/auth";
 
 export default function LoginForm() {
   const initialState: State = { message: null, errors: {} };

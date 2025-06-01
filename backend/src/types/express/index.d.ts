@@ -4,7 +4,8 @@ import express from "express";
 declare global {
   namespace Express {
     interface Request {
-      user?: User; // sau tipul tău
+      user?: User;
+      token?: string;
     }
   }
 }

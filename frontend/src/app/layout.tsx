@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { jost, hanuman, inter } from "@/ui/fonts";
+import { jost, hanuman, inter } from "@/assets/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
