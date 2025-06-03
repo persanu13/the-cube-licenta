@@ -4,8 +4,9 @@ import { redirect } from "next/navigation";
 import { State } from "../models/types";
 import { RegisterSchema } from "../schemas/user";
 import { SERVER_URL } from "../secrets";
+import { getToken } from "../auth/auth";
 
-export default async function signUp(
+export async function signUp(
   prevState: State,
   formData: FormData
 ): Promise<State> {
@@ -63,4 +64,53 @@ export default async function signUp(
   }
 
   redirect("/auth?tab=login");
+}
+
+export async function fetchUsers(
+  query: string,
+  role: string,
+  currentPage: number,
+  rows: number
+) {
+  try {
+    const token = await getToken();
+    const res = await fetch(
+      `${SERVER_URL}/api/users/filtred?q=${query}&role=${role}&page=${currentPage}&rows=${rows}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+    if (!res.ok) return null;
+    const users = await res.json();
+    return users;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function countUsers(query: string, role: string) {
+  try {
+    const token = await getToken();
+    const res = await fetch(
+      `${SERVER_URL}/api/users/count?q=${query}&role=${role}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+    if (!res.ok) return null;
+    const users = await res.json();
+    return users;
+  } catch (e) {
+    console.error(e);
+  }
 }

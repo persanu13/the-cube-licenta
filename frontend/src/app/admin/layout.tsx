@@ -12,11 +12,10 @@ export default async function Layout({
   if (!auth || auth.role !== "ADMIN") {
     notFound();
   }
-
   return (
-    <div className="flex h-screen  overflow-hidden bg-bej-100">
+    <div className="flex h-screen w-screen overflow-hidden">
       <AdminNav />
-      <div className="flex-grow p-12 overflow-y-auto ">{children}</div>
+      {children}
     </div>
   );
 }

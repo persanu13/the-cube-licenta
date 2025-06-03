@@ -6,7 +6,7 @@ import { useActionState } from "react";
 import { State } from "@/lib/models/types";
 import AuthInput from "@/components/common/AuthInput";
 import Button from "@/components/common/Button";
-import signUp from "@/lib/actions/user";
+import { signUp } from "@/lib/actions/user";
 
 export default function RegisterForm() {
   const initialState: State = { message: null };

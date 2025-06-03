@@ -10,40 +10,44 @@ import {
   EyeIcon,
   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
-import NavLinks from "./admin-links";
-import { signOut } from "@/lib/auth/auth";
 
-const generalLinks = [
+import { signOut } from "@/lib/auth/auth";
+import MenuCategory from "./menu-category";
+import { useActionState } from "react";
+
+const generalItems = [
   { name: "Dashboard", href: "/admin", icon: Squares2X2Icon },
   { name: "Users", href: "/admin/users", icon: UsersIcon },
   { name: "Lessons", href: "/admin/lessons", icon: ClipboardDocumentIcon },
   { name: "Statistics", href: "/admin/statistics", icon: ChartPieIcon },
 ];
 
-const toolsLinks = [
+const toolsItems = [
   { name: "User view", href: "/client", icon: EyeIcon },
   { name: "Settings", href: "/admin/settings", icon: Cog6ToothIcon },
 ];
 
 export default function AdminNav() {
+  const [state, action, isPending] = useActionState(signOut, null);
   return (
-    <div className="flex flex-col h-full w-60 bg-charade-950 px-6 py-8">
+    <div className="flex flex-col h-full w-[180px] bg-spring-white gap-7.5 px-3 py-5 flex-shrink-0 shadow-[2px_4px_4px_rgba(0,0,0,0.25)] z-10">
       <div className="flex items-center gap-2">
-        <LockClosedIcon className="text-spring-white w-8 h-8 stroke-3" />
-        <h1 className="text-spring-white text-4xl font-medium font-jost tracking-tight">
+        <LockClosedIcon className="text-tuatara-900 w-6 h-6 stroke-[2.5px]" />
+        <h1 className="text-tuatara-900 text-2xl font-medium font-jost tracking-tight">
           the cube
         </h1>
       </div>
-      <h3 className="text-tuatara-400 font-inter text-base mt-10">General</h3>
-      <NavLinks links={generalLinks} />
-      <h3 className="text-tuatara-400 font-inter text-base mt-10">Tools</h3>
-      <NavLinks links={toolsLinks} />
-      <form className="mt-10" action={signOut}>
+      <MenuCategory title="General" items={generalItems} />
+      <MenuCategory title="Tools" items={toolsItems} />
+      <form className="mt-auto" action={action}>
         <button
           type="submit"
-          className="flex gap-3 py-[2px] items-center text-spring-white cursor-pointer font-inter text-base w-fit transition-[padding] duration-500 hover:text-carnation-300 hover:pl-2 hover:border-l-2"
+          disabled={isPending}
+          className={`flex gap-2 py-[2px]  items-center font-medium font-inter text-[14px] w-fit transition-[padding] duration-500 hover:pl-2 ${
+            isPending ? "opacity-60 cursor-default " : "cursor-pointer"
+          }`}
         >
-          <ArrowRightStartOnRectangleIcon className="w-7" />
+          <ArrowRightStartOnRectangleIcon className="w-6" />
           <p>Log out</p>
         </button>
       </form>

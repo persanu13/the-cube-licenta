@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET, SERVER_URL } from "../secrets";
+import { SERVER_URL } from "../secrets";
 import { redirect } from "next/navigation";
 import { LoginSchema } from "../schemas/user";
 import { State } from "../models/types";

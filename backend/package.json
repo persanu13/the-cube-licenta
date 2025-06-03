@@ -8,13 +8,15 @@
     "dev": "ts-node --files ./src/index.ts",
     "db:migrate": "npx prisma migrate dev",
     "db:reset": "prisma migrate reset && prisma migrate dev",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio",
+    "db:client": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
