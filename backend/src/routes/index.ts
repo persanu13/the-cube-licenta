@@ -1,12 +1,13 @@
 import { Router } from "express";
 import authRoutes from "./auth";
-import lessonsRouter from "./lessons";
+
 import usersRouter from "./users";
+import coursesRouter from "./courses";
 
 const rootRouter: Router = Router();
 
 rootRouter.use("/auth", authRoutes);
 rootRouter.use("/users", usersRouter);
-rootRouter.use("/lessons", lessonsRouter);
+rootRouter.use("/courses", coursesRouter);
 
 export default rootRouter;

@@ -2,34 +2,40 @@ import clsx from "clsx";
 import Image from "next/image";
 
 interface LogoProps {
-  size?: "sm" | "md" | "lg"; // Definim dimensiunile disponibile
-  type?: "full" | "mini"; // Tipul logo-ului
+  type?: "full" | "mini";
 }
 
-export default function Logo({ size = "md", type = "full" }: LogoProps) {
-  const sizes = {
-    sm: { width: 36, height: 34 },
-    md: { width: 48, height: 50 },
-    lg: { width: 64, height: 68 },
-  };
+export default function Logo({ type = "full" }: LogoProps) {
   return (
-    <div
-      className={clsx("flex flex-row  items-end leading-tight", {
-        "text-[20px] gap-[3px]": size === "sm",
-        "text-[28px] gap-1": size === "md",
-        "text-[32px] gap-[5px]": size === "lg",
-      })}
-    >
-      <Image
-        src="/favicon.svg"
-        alt="logo"
-        width={sizes[size].width}
-        height={sizes[size].height}
-      />
+    <div className="flex gap-1 items-end">
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="13.5"
+          y="13.5"
+          width="19.5"
+          height="19.5"
+          rx="1"
+          stroke="#FF6868"
+          strokeWidth="3"
+        />
+        <circle
+          cx="12.75"
+          cy="12.75"
+          r="9.75"
+          stroke="#FEED2F"
+          strokeWidth="3"
+        />
+      </svg>
       {type === "full" && (
-        <span className=" font-jost font-medium text-charade-950">
+        <h1 className="text-[24px] font-jost font-medium text-charade-950 leading-[26px]">
           THE CUBE
-        </span>
+        </h1>
       )}
     </div>
   );

@@ -47,7 +47,9 @@ model User {
   role          Role      @default(STUDENT)
   emailVerified DateTime? @map("email_verified")
   image         String?
-  accounts      Account[]
+
+  accounts Account[]
+  Courses  Course[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,13 +66,32 @@ model BlacklistedToken {
   @@index([token])
 }
 
-model Lesson {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String
+enum Subject {
+  GEOMETRY
+  ALGEBRA
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+model Course {
+  id         String     @id @default(cuid())
+  creatorId  String     @map("user_id")
+  name       String
+  min_grade  Int
+  max_grade  Int
+  subject    Subject
+  visibility Visibility @default(PRIVATE)
+  color      String     @default("#000000")
+
+  content Json? @map("content")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("lessons")
+  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@map("courses")
 }

@@ -1,30 +1,40 @@
 "use client";
 
+import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-const options = ["Roles", "Admin", "Student", "Teacher"];
+type SelectProps = {
+  name: string;
+  options: string[];
+  className?: string;
+};
 
-export default function SelectRole() {
+export default function Select({ name, options, className }: SelectProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
   const selected = useMemo(() => {
-    return searchParams.get("role")?.toString();
+    return searchParams.get(name)?.toString();
   }, [searchParams]);
 
   const onChange = (selected: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
-    params.set("role", selected);
+    params.set(name, selected);
     replace(`${pathname}?${params.toString()}`);
   };
 
   return (
-    <div className="flex items-center relative w-fit  bg-bej-100 rounded-[4px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+    <div
+      className={clsx(
+        "flex items-center relative w-fit  bg-bej-100 rounded-[4px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]",
+        className
+      )}
+    >
       <select
-        className="border-0 outline-0 text-[14px] font-medium font-inter text-charade-950 appearance-none bg-transparent cursor-pointer pr-5 pl-2 py-1 "
+        className="border-0 w-full outline-0 text-[14px] font-medium font-inter text-charade-950 appearance-none bg-transparent cursor-pointer pr-5 pl-2 py-1 "
         value={selected}
         onChange={(e) => onChange(e.target.value)}
       >

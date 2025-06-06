@@ -23,7 +23,7 @@ export default function MenuCategory({ title, items }: MenuCategoryProps) {
       <h3 className="text-tuatara-400 font-inter text-[13px] font-light">
         {title}
       </h3>
-      <div className="flex flex-col gap-3 pl-1 text-tuatara-900">
+      <div className="flex flex-col gap-3 pl-1 ">
         {items.map((item) => {
           const LinkIcon = item.icon;
           return (
@@ -31,10 +31,11 @@ export default function MenuCategory({ title, items }: MenuCategoryProps) {
               key={item.name}
               href={item.href}
               className={clsx(
-                "flex gap-2 py-[2px] items-center font-medium font-inter text-[14px] w-fit transition-[padding] duration-500 hover:text-carnation-400 hover:pl-2 hover:border-l-2",
-                {
-                  "text-carnation-400 pl-2 border-l-2": pathname === item.href,
-                }
+                "flex gap-2 py-[2px] items-center font-medium  font-inter text-[14px] w-fit ",
+
+                pathname === item.href
+                  ? "text-carnation-400 pl-2 border-l-2"
+                  : "text-tuatara-900 transition-[padding] duration-500  hover:pl-2"
               )}
             >
               <LinkIcon className="w-6" strokeWidth={2} />

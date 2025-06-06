@@ -1,7 +1,7 @@
 import Pagination from "@/components/admin/pagination";
-import SearchBar from "@/components/admin/search-bar";
+import SearchBar from "@/components/common/search-bar";
 import ShowRows from "@/components/admin/show-rows";
-import SelectRole from "@/components/admin/users/select-role";
+import Select from "@/components/common/select";
 import UsersTable from "@/components/admin/users/users-table";
 import { countUsers } from "@/lib/actions/user";
 
@@ -28,7 +28,10 @@ export default async function Page(props: {
         <h2 className="font-inter text-[16px] font-medium text-charade-950">{`Users(${totalUsers})`}</h2>
         <div className="flex gap-5">
           <SearchBar placeholder="Search users..." />
-          <SelectRole />
+          <Select
+            name="role"
+            options={["Roles", "Admin", "Student", "Teacher"]}
+          />
         </div>
         <UsersTable
           query={query}

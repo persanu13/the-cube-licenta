@@ -1,10 +1,17 @@
 "use client";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function SearchBar({ placeholder }: { placeholder: string }) {
+export default function SearchBar({
+  placeholder,
+  className,
+}: {
+  placeholder: string;
+  className?: string;
+}) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -21,7 +28,12 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <div className="flex w-[220px] bg-bej-100 gap-[10px] px-2 py-1 rounded-[4px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+    <div
+      className={clsx(
+        "flex  min-w-[160px] bg-bej-100 gap-[10px] px-2 py-1 rounded-[4px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]",
+        className
+      )}
+    >
       <input
         className="peer/input w-full flex-1 placeholder:text-tuatara-400 outline-none bg-transparent"
         placeholder={placeholder}

@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use("/api", rootRouter);
 
 export const prismaClient = new PrismaClient({
-  log: ["query"],
+  log: ["error", "warn"],
 });
 
 app.use(errorMiddleware);

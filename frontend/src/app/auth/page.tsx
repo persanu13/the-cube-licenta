@@ -14,10 +14,14 @@ export default async function AuthPage(props: {
 }) {
   const auth = await getAuth();
   if (auth) {
+    if (auth.role === "STUDENT") {
+      redirect("/student");
+    }
+    if (auth.role === "TEACHER") {
+      redirect("/teacher");
+    }
     if (auth.role === "ADMIN") {
       redirect("/admin");
-    } else {
-      redirect("/client");
     }
   }
 
@@ -30,7 +34,7 @@ export default async function AuthPage(props: {
       <div className="w-full h-full hidden bg-spring-white sm:block "></div>
       <div className="flex flex-col  bg-spring-white items-center  w-full">
         <div className="flex flex-col pt-6 px-[25px] pb-16  w-[clamp(320px,100%,600px)]">
-          <Logo size="md" />
+          <Logo />
           <h2 className="text-xl mt-3 font-jost">Log in your Account</h2>
           {!swich ? (
             <div className="flex flex-col mt-5 ">

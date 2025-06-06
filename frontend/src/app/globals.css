@@ -3,6 +3,7 @@
 :root {
   --tuatara-900: #383838;
   --tuatara-400: #888888;
+  --border: #686d76;
   --carnation-300: #ffa0a0;
   --carnation-400: #ff6868;
   --carnation-500: #f83b3b;
@@ -23,6 +24,7 @@
 @theme inline {
   --color-tuatara-900: var(--tuatara-900);
   --color-tuatara-400: var(--tuatara-400);
+  --color-border: var(--border);
   --color-carnation-300: var(--carnation-300);
   --color-carnation-400: var(--carnation-400);
   --color-carnation-500: var(--carnation-500);
@@ -46,6 +48,8 @@
   --shadow-yellow: inset 4px 4px 0px 0px var(--spring-white),
     5px 5px 0px -1px var(--color-broom-300);
   --shadow-glow-carnation: 0px 0px 4px 1px var(--carnation-400);
+  --shadow-square: 2px 2px 0 0 var(--color-tuatara-900),
+    -2px -2px 0 0 var(--color-tuatara-900), 0 4px 4px 2px #00000025;
   --animate-left-right: left-right 2s ease-in-out infinite alternate;
   @keyframes left-right {
     0% {
@@ -65,6 +69,21 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 body {

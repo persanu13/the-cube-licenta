@@ -31,5 +31,11 @@ export const users: UserInput[] = [
     password: "admin12",
     role: "ADMIN",
   },
+  {
+    name: "Teacher",
+    email: "teacher@gmail.com",
+    password: "teacher12",
+    role: "TEACHER",
+  },
   ...generateMockUsers(50),
 ];

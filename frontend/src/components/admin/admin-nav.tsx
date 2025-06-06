@@ -14,6 +14,7 @@ import {
 import { signOut } from "@/lib/auth/auth";
 import MenuCategory from "./menu-category";
 import { useActionState } from "react";
+import clsx from "clsx";
 
 const generalItems = [
   { name: "Dashboard", href: "/admin", icon: Squares2X2Icon },
@@ -43,9 +44,10 @@ export default function AdminNav() {
         <button
           type="submit"
           disabled={isPending}
-          className={`flex gap-2 py-[2px]  items-center font-medium font-inter text-[14px] w-fit transition-[padding] duration-500 hover:pl-2 ${
+          className={clsx(
+            "flex gap-2 py-[2px] text-tuatara-900 items-center font-medium font-inter text-[14px] w-fit transition-[padding] duration-500 hover:pl-2",
             isPending ? "opacity-60 cursor-default " : "cursor-pointer"
-          }`}
+          )}
         >
           <ArrowRightStartOnRectangleIcon className="w-6" />
           <p>Log out</p>

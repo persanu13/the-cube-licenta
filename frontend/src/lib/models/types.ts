@@ -5,6 +5,6 @@ export type State = {
     [key: string]: string[]; // array de mesaje de eroare pe fiecare câmp
   };
   values?: {
-    [key: string]: string; // valorile câmpurilor - doar string, fără null sau undefined
+    [key: string]: string | number; // valorile câmpurilor - doar string, fără null sau undefined
   };
 };
