@@ -16,20 +16,22 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import path from "path";
 
-type MenuItem = {
+type IconName = "HomeIcon" | "DocumentTextIcon" | "UsersIcon" | "Cog6ToothIcon";
+
+export type MenuItem = {
   name: string;
   href: string;
-  icon: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>;
+  iconName: IconName;
 };
 
-const menuItems: MenuItem[] = [
-  { name: "HOME", href: "/teacher", icon: HomeIcon },
-  { name: "COURSES", href: "/teacher/courses", icon: DocumentTextIcon },
-  { name: "GROUPS", href: "/teacher/groups", icon: UsersIcon },
-  { name: "SETTINGS", href: "/teacher/settings", icon: Cog6ToothIcon },
-];
+const iconMap = {
+  HomeIcon: HomeIcon,
+  DocumentTextIcon: DocumentTextIcon,
+  UsersIcon,
+  Cog6ToothIcon,
+};
 
-export default function UserNav() {
+export default function UserNav({ menuItems }: { menuItems: MenuItem[] }) {
   const [state, action, isPending] = useActionState(signOut, null);
   const pathname = usePathname();
   return (
@@ -37,7 +39,7 @@ export default function UserNav() {
       <Logo />
       <div className="flex flex-col gap-[8px] w-full h-fit">
         {menuItems.map((item, index) => {
-          const Icon = item.icon;
+          const Icon = iconMap[item.iconName];
           return (
             <Link
               key={item.href}

@@ -11,6 +11,7 @@ import Link from "next/link";
 
 const PANEL: PanelState = {
   id: "cadsfasddsa234",
+  type: "PANEL",
   width: 300,
   height: 300,
   name: "Triangle",

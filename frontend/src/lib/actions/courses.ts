@@ -121,7 +121,4 @@ export async function updateCourseContent(courseId: string, content: any[]) {
   } catch (e) {
     console.error(e);
   }
-
-  revalidatePath(`/course/${courseId}/edit`);
-  redirect(`/course/${courseId}/edit`);
 }

@@ -71,6 +71,14 @@
   }
 }
 
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
 input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;

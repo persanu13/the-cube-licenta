@@ -8,3 +8,5 @@ export type State = {
     [key: string]: string | number; // valorile câmpurilor - doar string, fără null sau undefined
   };
 };
+
+export type TContentType = "PANEL" | "TEXT";

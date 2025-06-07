@@ -1,3 +1,4 @@
+import { TContentType } from "@/lib/models/types";
 import { TShape } from "./figurine";
 
 export type TAction =
@@ -8,6 +9,7 @@ export type TAction =
 
 export type PanelState = {
   id: string;
+  type: TContentType;
   name: string;
   width: number;
   height: number;
