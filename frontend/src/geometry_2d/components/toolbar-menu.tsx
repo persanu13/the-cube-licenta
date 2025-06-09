@@ -10,16 +10,24 @@ import { TAction } from "../Interfaces/types";
 
 import Icon, { TIcon } from "@/components/common/icon";
 import { useCanvasStore } from "../canvas-context";
+import MenuItem from "./menu-item";
 
-const MenuItems: {
+export type TMenuItem = {
   icon: TIcon;
   action: TAction;
   variant: "fill" | "stroke";
-}[] = [
-  { icon: "cursor", action: "move_select_fig", variant: "fill" },
-  { icon: "hand", action: "move_view_box", variant: "fill" },
-  { icon: "square", action: "add_figurine", variant: "stroke" },
-  { icon: "pen", action: "use_pen", variant: "stroke" },
+};
+
+const shapeMenu: TMenuItem[] = [
+  { icon: "square", action: "add_point", variant: "stroke" },
+  { icon: "square", action: "add_line", variant: "stroke" },
+];
+
+const MenuItems: TMenuItem[][] = [
+  [{ icon: "cursor", action: "move_select_fig", variant: "fill" }],
+  [{ icon: "hand", action: "move_view_box", variant: "fill" }],
+  shapeMenu,
+  [{ icon: "pen", action: "use_pen", variant: "stroke" }],
 ];
 
 export default function ToolBarMenu() {
@@ -37,29 +45,9 @@ export default function ToolBarMenu() {
   };
 
   return (
-    <div className="flex pt-1 pb-[6px] mb-2 absolute px-2 border-2 border-charade-950 bg-bej-100 rounded-lg gap-[6px] shadow-charade z-10">
-      {MenuItems.map((item) => {
-        return (
-          <button
-            key={item.action}
-            className={clsx(
-              "cursor-pointer rounded p-[2px] flex items-center justify-center ",
-              action === item.action
-                ? "bg-carnation-400 shadow-charade"
-                : "bg-transparent"
-            )}
-            onClick={() => handleClick(item.action)}
-          >
-            <Icon
-              name={item.icon}
-              width={24}
-              height={24}
-              color={action == item.action ? "#f9f7f3" : "#383838"}
-              variant={item.variant}
-              strokeWidth={1.5}
-            ></Icon>
-          </button>
-        );
+    <div className="flex pt-1 pb-[6px] mb-2 absolute px-2 border-2 border-charade-950 bg-bej-100 rounded-lg gap-[6px] shadow-[2px_2px_0_var(--charade-950)] z-10">
+      {MenuItems.map((item, index) => {
+        return <MenuItem key={index} itemMenu={item} />;
       })}
       <button
         className="cursor-pointer rounded p-[2px] flex items-center justify-center "

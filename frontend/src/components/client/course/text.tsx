@@ -4,8 +4,9 @@ import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 
 export type TCourseText = {
-  value?: string;
+  id: string;
   type: TContentType;
+  value?: string;
   placeholder?: string;
   size?: number;
   font?: string;
@@ -13,10 +14,12 @@ export type TCourseText = {
 };
 export default function CourseText({
   text,
+  focus,
   onChange,
 }: {
   text: TCourseText;
-  onChange: (value: string) => void;
+  focus: boolean;
+  onChange?: (text: TCourseText) => void;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -29,7 +32,7 @@ export default function CourseText({
 
   useEffect(() => {
     resize();
-  }, [text]);
+  }, [text.size]);
 
   return (
     <textarea
@@ -44,7 +47,10 @@ export default function CourseText({
       placeholder={text.placeholder}
       value={text.value ?? ""}
       onChange={(e) => {
-        onChange(e.target.value);
+        if (onChange) {
+          text.value = e.target.value;
+          onChange(text);
+        }
         resize();
       }}
     />

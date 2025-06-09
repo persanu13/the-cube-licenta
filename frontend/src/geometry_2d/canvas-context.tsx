@@ -19,18 +19,29 @@ const PanelContext = createContext<UseStore | null>(null);
 
 type PanelProviderProps = {
   children: ReactNode;
-  shapesData?: TShape[];
+  shapesData: TShape[];
 };
 
 export function PanelProvider({ children, shapesData }: PanelProviderProps) {
-  console.log("rerender Context");
+  //console.log("rerender Context");
   const storeRef = useRef<UseStore>(createCanvasStore()).current;
+  const firstTime = useRef(false);
   const setShapes = storeRef((s) => s.setShapes);
+  const shapes = storeRef((s) => s.shapes);
+
   useEffect(() => {
-    if (!shapesData) return;
-    const shapes = createShapes(shapesData);
-    setShapes(shapes);
-  }, []);
+    if (!firstTime.current) {
+      if (!shapesData) return;
+      const shapes = createShapes(shapesData);
+      setShapes(shapes);
+      firstTime.current = true;
+    } else {
+      shapesData.length = 0;
+      for (let shape of shapes) {
+        shapesData.push(shape.toJson());
+      }
+    }
+  }, [shapes]);
 
   return (
     <PanelContext.Provider value={storeRef}>{children}</PanelContext.Provider>

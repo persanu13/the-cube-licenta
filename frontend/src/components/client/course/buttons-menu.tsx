@@ -4,12 +4,14 @@ import { TCourseText } from "./text";
 import { PanelState } from "@/geometry_2d/Interfaces/types";
 import { generateRandomPoints } from "@/geometry_2d/lib/utility/generate";
 import { Panel } from "@/geometry_2d/components/panel";
+import { v4 as uuidv4 } from "uuid";
 
 const BUTTONS = [
   {
     name: "Title",
     fct: (content: any[], setContent: Dispatch<SetStateAction<any[]>>) => {
       const newParagraph: TCourseText = {
+        id: uuidv4(),
         value: "",
         type: "TEXT",
         placeholder: "Title her...",
@@ -24,6 +26,7 @@ const BUTTONS = [
     name: "Subtitle",
     fct: (content: any[], setContent: Dispatch<SetStateAction<any[]>>) => {
       const newParagraph: TCourseText = {
+        id: uuidv4(),
         value: "",
         type: "TEXT",
         placeholder: "Subtitle her...",
@@ -38,6 +41,7 @@ const BUTTONS = [
     name: "Paragraph",
     fct: (content: any[], setContent: Dispatch<SetStateAction<any[]>>) => {
       const newParagraph: TCourseText = {
+        id: uuidv4(),
         value: "",
         type: "TEXT",
         placeholder: "Text...",
@@ -57,7 +61,7 @@ const BUTTONS = [
         width: 300,
         height: 300,
         name: "Triangle",
-        shapesData: generateRandomPoints(1000),
+        shapesData: [],
       };
       setContent([...content, newCanvas]);
     },

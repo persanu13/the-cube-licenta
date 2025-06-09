@@ -30,7 +30,7 @@ export interface IShape extends TShape {
   isInViewBox: boolean;
   bounding: Bounding;
 
-  getConstructorForm: () => TShape;
+  toJson: () => TShape;
   setRealForm: (manager: GCanvasManager, viewBox: ViewBox) => void;
   setVirtualForm: (manager: GCanvasManager) => void;
   setBounding: (dx: number, dy: number) => void;

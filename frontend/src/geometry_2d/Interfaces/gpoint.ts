@@ -42,14 +42,13 @@ export class GPoint implements IShape {
       bottom: coordonates.y,
       left: coordonates.x,
     };
-
     this.coordonates = coordonates;
     this.realCoordonates = { x: 0, y: 0 };
     this.size = size;
     this.color = color;
   }
 
-  public getConstructorForm(): TPoint {
+  public toJson(): TPoint {
     return {
       id: this.id,
       type: this.type,

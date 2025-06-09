@@ -7,9 +7,11 @@ import { useCallback } from "react";
 import { throttle } from "lodash";
 import { IShape } from "../Interfaces/figurine";
 import { useCanvasStore } from "../canvas-context";
+import { GPoint } from "../Interfaces/gpoint";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Canvas() {
-  console.log("rerender canvas2D");
+  //console.log("rerender canvas2D");
   const [isMouseDown, setIsMouseDown] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasManager = useRef<GCanvasManager | null>(null);
@@ -19,6 +21,8 @@ export default function Canvas() {
   const action = useCanvasStore((s) => s.action);
 
   const shapes = useCanvasStore((s) => s.shapes);
+  const setShapes = useCanvasStore((s) => s.setShapes);
+  const addShape = useCanvasStore((s) => s.addShape);
 
   const selectedShapes = useCanvasStore((s) => s.selectedShapes);
   const setSelectedShapes = useCanvasStore((s) => s.setSelectedShapes);
@@ -109,7 +113,6 @@ export default function Canvas() {
 
     if (hovered) {
       setSelectedShapes([hovered]);
-      console.log(hovered);
     } else {
       setSelectedShapes([]);
     }
@@ -132,12 +135,34 @@ export default function Canvas() {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseup", end);
       if (hovered) canvasManager.current?.updateVirtual([hovered]);
-      console.log(hovered);
+
+      setShapes([...shapes]);
       setIsMouseDown(false);
     };
 
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseup", end);
+  };
+
+  const addPoint = (e: React.MouseEvent) => {
+    let mouseCoordonate = {
+      x: e.nativeEvent.offsetX,
+      y: e.nativeEvent.offsetY,
+    };
+    if (canvasManager.current) {
+      const newPointCoordonate =
+        canvasManager.current.toVirtualPoint(mouseCoordonate);
+      const newPoint = new GPoint(
+        uuidv4(),
+        "A",
+        "#F83B3B",
+        5,
+        newPointCoordonate
+      );
+      newPoint.setIsInViewBox(viewBox.getBounding());
+      newPoint.setRealForm(canvasManager.current);
+      addShape(newPoint);
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -147,6 +172,9 @@ export default function Canvas() {
         break;
       case "move_view_box":
         handleStartPan(e);
+        break;
+      case "add_point":
+        addPoint(e);
         break;
       default:
         console.warn("Action not defined!");
@@ -159,6 +187,7 @@ export default function Canvas() {
     if (action == "move_select_fig") return "default";
     if (action === "move_view_box" && isMouseDown) return "grabbing";
     if (action === "move_view_box") return "grab";
+    if (action === "add_point") return "pointer";
     return "default";
   };
 

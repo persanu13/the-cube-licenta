@@ -39,7 +39,7 @@ export class GCanvasManager {
   };
 
   public drawAll = (figurine: IShape[], selected: IShape[]) => {
-    console.time("paint");
+    //console.time("paint");
     this.deletePaint();
     for (let i = figurine.length - 1; i >= 0; i--) {
       if (figurine[i].isSelected) continue;
@@ -48,36 +48,36 @@ export class GCanvasManager {
     for (let i = selected.length - 1; i >= 0; i--) {
       selected[i].draw(this.ctx);
     }
-    console.timeEnd("paint");
+    //console.timeEnd("paint");
   };
 
   public updateReal = (figurine: IShape[]) => {
-    console.time("updatereal");
+    //console.time("updatereal");
     for (let fig of figurine) {
       fig.setIsInViewBox(this.viewBox.getBounding());
       fig.setRealForm(this, this.viewBox);
     }
-    console.timeEnd("updatereal");
+    // console.timeEnd("updatereal");
   };
 
   public updateVirtual = (figurine: IShape[]) => {
-    console.time("updatevirtual");
+    //console.time("updatevirtual");
     for (let fig of figurine) {
       fig.setVirtualForm(this);
       fig.setIsInViewBox(this.viewBox.getBounding());
     }
-    console.timeEnd("updatevirtual");
+    //console.timeEnd("updatevirtual");
   };
 
   public vericate = (figurine: IShape[], mouse: Point2D): IShape | null => {
-    console.time("verificate");
+    //console.time("verificate");
     for (let fig of figurine) {
       if (fig.isHovered(mouse)) {
-        console.timeEnd("verificate");
+        //console.timeEnd("verificate");
         return fig;
       }
     }
-    console.timeEnd("verificate");
+    // console.timeEnd("verificate");
     return null;
   };
 }

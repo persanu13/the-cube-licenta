@@ -20,7 +20,7 @@ export default function PanelWrapper({ panel }: { panel: PanelState }) {
 type PanelProps = { width?: number; height?: number };
 
 export function Panel({ width = 600, height = 400 }: PanelProps) {
-  console.log("render Panel");
+  //console.log("render Panel");
   const panelRef = useRef<HTMLDivElement>(null);
   const isFullscreen = useCanvasStore((s) => s.fullscreen);
   const setFullscreen = useCanvasStore((s) => s.setFullscreen);

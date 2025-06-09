@@ -3,7 +3,7 @@
 import { useCanvasStore } from "../canvas-context";
 
 export default function RightPanel() {
-  console.log("render RigthPanel");
+  //console.log("render RigthPanel");
   const viewBox = useCanvasStore((s) => s.viewBoxState);
 
   return (

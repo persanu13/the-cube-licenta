@@ -4,7 +4,10 @@ import { TShape } from "./figurine";
 export type TAction =
   | "move_view_box"
   | "move_select_fig"
-  | "add_figurine"
+  | "add_point"
+  | "add_line"
+  | "add_square"
+  | "add_poligone"
   | "use_pen";
 
 export type PanelState = {
