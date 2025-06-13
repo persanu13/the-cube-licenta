@@ -5,7 +5,8 @@ import { IShape } from "../Interfaces/figurine";
 
 interface ShapeDelta {
   added: IShape[];
-  removed: string[];
+  removed: IShape[];
+  updated?: { before: IShape; after: IShape }[];
 }
 
 type ViewBoxState = {
@@ -24,6 +25,7 @@ export type CanvasStoreState = {
   selectedShapes: IShape[];
   viewBox: ViewBox;
   viewBoxState: ViewBoxState;
+
   history: ShapeDelta[];
   future: ShapeDelta[];
 
@@ -37,7 +39,8 @@ export type CanvasStoreState = {
   setShapes: (shapes: IShape[]) => void;
 
   addShape: (shape: IShape) => void;
-  removeShape: (id: string) => void;
+  removeShape: (shape: IShape) => void;
+  updateShape: (before: IShape, after: IShape) => void;
 
   setSelectedShapes: (shapes: IShape[]) => void;
 
@@ -97,14 +100,29 @@ export const createCanvasStore = () => {
         future: [],
       })),
 
-    removeShape: (id: string) =>
+    removeShape: (shape: IShape) =>
       set((state) => {
-        const removed = state.shapes.filter((s) => s.id === id);
+        const removed = state.shapes.filter((s) => s === shape);
+        if (removed.length < 1) {
+          return state;
+        }
         return {
-          shapes: state.shapes.filter((s) => s.id !== id),
+          shapes: state.shapes.filter((s) => s !== shape),
+          history: [...state.history, { added: [], removed: removed }],
+          future: [],
+        };
+      }),
+
+    updateShape: (before, after) =>
+      set((state) => {
+        const updatedShapes = state.shapes.map((s) =>
+          s === before ? after : s
+        );
+        return {
+          shapes: updatedShapes,
           history: [
             ...state.history,
-            { added: [], removed: removed.map((s) => s.id) },
+            { added: [], removed: [], updated: [{ before, after }] },
           ],
           future: [],
         };
@@ -126,13 +144,23 @@ export const createCanvasStore = () => {
     undo: () =>
       set((state) => {
         if (state.history.length === 0) return {};
+
         const lastDelta = state.history[state.history.length - 1];
-        const newShapes = [
-          ...state.shapes.filter((s) => !lastDelta.added.includes(s)),
-          ...lastDelta.removed.map((id) => ({ id } as IShape)),
-        ];
+
+        const shapesWithoutAdded = state.shapes.filter(
+          (s) => !lastDelta.added.includes(s)
+        );
+        const shapesWithRemoved = shapesWithoutAdded.concat(lastDelta.removed);
+
+        const shapesWithUndoUpdates = lastDelta.updated
+          ? shapesWithRemoved.map((s) => {
+              const found = lastDelta.updated!.find((u) => u.after === s);
+              return found ? found.before : s;
+            })
+          : shapesWithRemoved;
+
         return {
-          shapes: newShapes,
+          shapes: shapesWithUndoUpdates,
           history: state.history.slice(0, -1),
           future: [lastDelta, ...state.future],
         };
@@ -141,12 +169,23 @@ export const createCanvasStore = () => {
     redo: () =>
       set((state) => {
         if (state.future.length === 0) return {};
+
         const nextDelta = state.future[0];
-        const newShapes = [...state.shapes, ...nextDelta.added].filter(
-          (s) => !nextDelta.removed.includes(s.id)
+
+        const shapesWithoutRemoved = state.shapes.filter(
+          (s) => !nextDelta.removed.includes(s)
         );
+        const shapesWithAdded = shapesWithoutRemoved.concat(nextDelta.added);
+
+        const shapesWithRedoUpdates = nextDelta.updated
+          ? shapesWithAdded.map((s) => {
+              const found = nextDelta.updated!.find((u) => u.before === s);
+              return found ? found.after : s;
+            })
+          : shapesWithAdded;
+
         return {
-          shapes: newShapes,
+          shapes: shapesWithRedoUpdates,
           history: [...state.history, nextDelta],
           future: state.future.slice(1),
         };

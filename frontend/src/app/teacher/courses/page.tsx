@@ -5,6 +5,7 @@ import Link from "next/link";
 import Select from "@/components/common/select";
 import { fetchTheachersCourses } from "@/lib/actions/courses";
 import { Course } from "@/lib/models/course";
+import CoursesContainer from "@/components/client/teacher/cards-container";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -53,11 +54,7 @@ export default async function Page(props: {
             />
           </div>
         </div>
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
+        <CoursesContainer courses={courses} />
       </div>
     </main>
   );

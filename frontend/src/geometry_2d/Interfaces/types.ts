@@ -7,8 +7,9 @@ export type TAction =
   | "add_point"
   | "add_line"
   | "add_square"
-  | "add_poligone"
-  | "use_pen";
+  | "add_polygon"
+  | "add_path"
+  | "delete";
 
 export type PanelState = {
   id: string;

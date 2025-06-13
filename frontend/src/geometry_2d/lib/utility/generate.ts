@@ -1,5 +1,8 @@
 import { IShape, ShapeType, TShape } from "@/geometry_2d/Interfaces/figurine";
+import { GLine, TLine } from "@/geometry_2d/Interfaces/gline";
+import { GPath, TPath } from "@/geometry_2d/Interfaces/gpath";
 import { GPoint, TPoint } from "@/geometry_2d/Interfaces/gpoint";
+import { GPolygon, TPolygon } from "@/geometry_2d/Interfaces/gpolygone";
 
 export const generateRandomPoint = (id: string): TPoint => {
   const randomX = Math.floor(Math.random() * 600) - 300;
@@ -29,18 +32,19 @@ export const createShapes = (figurine: TShape[]): IShape[] => {
     switch (fig.type) {
       case ShapeType.POINT:
         const point: TPoint = fig as TPoint;
-        returnat.push(
-          new GPoint(
-            point.id,
-            point.name,
-            point.color,
-            point.size,
-            point.coordonates
-          )
-        );
+        returnat.push(new GPoint(point));
+        break;
+      case ShapeType.LINE:
+        const line: TLine = fig as TLine;
+        returnat.push(new GLine(line));
         break;
       case ShapeType.POLYGON:
-        console.log("It's a polygon!");
+        const polygon: TPolygon = fig as TPolygon;
+        returnat.push(new GPolygon(polygon));
+        break;
+      case ShapeType.PATH:
+        const path: TPath = fig as TPath;
+        returnat.push(new GPath(path));
         break;
 
       default:

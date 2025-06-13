@@ -51,6 +51,8 @@ model User {
   accounts Account[]
   Courses  Course[]
 
+  studentGroups Group[] @relation("StudentGroups")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -91,7 +93,25 @@ model Course {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator User    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  groups  Group[] @relation("CourseGroups")
+  groupId String?
 
   @@map("courses")
+}
+
+model Group {
+  id    String @id @default(cuid())
+  name  String
+  color String @default("#000000")
+
+  teacherId String @map("teacher_id")
+
+  students User[]   @relation("StudentGroups")
+  courses  Course[] @relation("CourseGroups")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("groups")
 }

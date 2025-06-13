@@ -4,9 +4,13 @@ import { errorHandler } from "../error-handler";
 import authMiddleware from "../middlewares/auth";
 import {
   createCourse,
+  deleteCourse,
+  getCourseById,
   getCourseContent,
+  getStudentCourses,
   getTeachersCourses,
-  updatCourseContent,
+  updateCourse,
+  updateCourseContent,
 } from "../controllers/courses";
 import teacherMiddleware from "../middlewares/teacher";
 
@@ -24,12 +28,36 @@ coursesRouter.get(
   errorHandler(getTeachersCourses)
 );
 
+coursesRouter.get(
+  "/student-courses",
+  [authMiddleware],
+  errorHandler(getStudentCourses)
+);
+
+coursesRouter.get(
+  "/:courseId",
+  [authMiddleware, teacherMiddleware],
+  errorHandler(getCourseById)
+);
+
 coursesRouter.get("/:courseId/content", errorHandler(getCourseContent));
 
 coursesRouter.patch(
   "/content",
   [authMiddleware, teacherMiddleware],
-  errorHandler(updatCourseContent)
+  errorHandler(updateCourseContent)
+);
+
+coursesRouter.patch(
+  "/:courseId",
+  [authMiddleware, teacherMiddleware],
+  errorHandler(updateCourse)
+);
+
+coursesRouter.delete(
+  "/delete",
+  [authMiddleware, teacherMiddleware],
+  errorHandler(deleteCourse)
 );
 
 export default coursesRouter;

@@ -14,11 +14,11 @@ export type TCourseText = {
 };
 export default function CourseText({
   text,
-  focus,
+  readonly,
   onChange,
 }: {
   text: TCourseText;
-  focus: boolean;
+  readonly?: boolean;
   onChange?: (text: TCourseText) => void;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -37,6 +37,7 @@ export default function CourseText({
   return (
     <textarea
       ref={ref}
+      readOnly={readonly}
       rows={1}
       className="w-full outline-0 resize-none overflow-hidden"
       style={{

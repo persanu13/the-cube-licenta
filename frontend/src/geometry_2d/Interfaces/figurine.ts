@@ -15,12 +15,14 @@ export type Bounding = {
 
 export enum ShapeType {
   POINT = "POINT",
+  LINE = "LINE",
   POLYGON = "POLYGON",
+  PATH = "PATH",
 }
 
 export type TShape = {
   id: string;
-  type: ShapeType;
+  type?: ShapeType;
   name: string;
   color: string;
 };
@@ -33,9 +35,9 @@ export interface IShape extends TShape {
   toJson: () => TShape;
   setRealForm: (manager: GCanvasManager, viewBox: ViewBox) => void;
   setVirtualForm: (manager: GCanvasManager) => void;
-  setBounding: (dx: number, dy: number) => void;
+  updateBounding: () => void;
   moveFig: (dx: number, dy: number) => void;
   draw: (ctx: CanvasRenderingContext2D) => void;
-  isHovered: (mousePoint: Point2D) => boolean;
+  isHovered: (mousePoint: Point2D, radius?: number) => IShape | null;
   setIsInViewBox: (viewBoxBounding: Bounding) => boolean;
 }

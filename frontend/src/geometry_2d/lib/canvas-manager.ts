@@ -45,6 +45,7 @@ export class GCanvasManager {
       if (figurine[i].isSelected) continue;
       figurine[i].draw(this.ctx);
     }
+
     for (let i = selected.length - 1; i >= 0; i--) {
       selected[i].draw(this.ctx);
     }
@@ -69,12 +70,12 @@ export class GCanvasManager {
     //console.timeEnd("updatevirtual");
   };
 
-  public vericate = (figurine: IShape[], mouse: Point2D): IShape | null => {
+  public verificate = (figurine: IShape[], mouse: Point2D): IShape | null => {
     //console.time("verificate");
     for (let fig of figurine) {
       if (fig.isHovered(mouse)) {
         //console.timeEnd("verificate");
-        return fig;
+        return fig.isHovered(mouse);
       }
     }
     // console.timeEnd("verificate");

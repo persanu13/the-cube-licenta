@@ -1,7 +1,8 @@
 "use client";
 
 import { GCanvasManager } from "../lib/canvas-manager";
-import { isPointInCircle } from "../lib/shape-detection";
+import { isPointInCircle } from "../lib/utility/shape-detection";
+
 import { Bounding, IShape, Point2D, ShapeType, TShape } from "./figurine";
 
 export type TPoint = TShape & {
@@ -21,31 +22,27 @@ export class GPoint implements IShape {
 
   size: number;
   coordonates: Point2D;
-
   realCoordonates: Point2D;
+  parent?: IShape;
 
-  constructor(
-    id: string,
-    name: string,
-    color: string = "#F83B3B",
-    size: number,
-    coordonates: Point2D
-  ) {
-    this.id = id;
-    this.name = name;
+  constructor(point: TPoint) {
+    this.id = point.id;
+    this.name = point.name;
     this.type = ShapeType.POINT;
+    this.color = point.color;
+
     this.isSelected = false;
     this.isInViewBox = false;
     this.bounding = {
-      top: coordonates.y,
-      right: coordonates.x,
-      bottom: coordonates.y,
-      left: coordonates.x,
+      top: point.coordonates.y,
+      right: point.coordonates.x,
+      bottom: point.coordonates.y,
+      left: point.coordonates.x,
     };
-    this.coordonates = coordonates;
+
+    this.size = point.size;
+    this.coordonates = point.coordonates;
     this.realCoordonates = { x: 0, y: 0 };
-    this.size = size;
-    this.color = color;
   }
 
   public toJson(): TPoint {
@@ -59,6 +56,10 @@ export class GPoint implements IShape {
     };
   }
 
+  public setParent(parent: IShape): void {
+    this.parent = parent;
+  }
+
   public setRealForm = (manager: GCanvasManager): void => {
     if (!this.isInViewBox) return;
     this.realCoordonates = manager.toScreenPoint(this.coordonates);
@@ -66,19 +67,19 @@ export class GPoint implements IShape {
 
   public setVirtualForm = (manager: GCanvasManager): void => {
     const newCoodonates = manager.toVirtualPoint(this.realCoordonates);
-    this.setBounding(
-      newCoodonates.x - this.coordonates.x,
-      newCoodonates.y - this.coordonates.y
-    );
+    const difX = newCoodonates.x - this.coordonates.x;
+    const difY = newCoodonates.y - this.coordonates.y;
+    this.bounding.top += difY;
+    this.bounding.right += difX;
+    this.bounding.bottom += difY;
+    this.bounding.left += difX;
     this.coordonates = newCoodonates;
+    if (this.parent) {
+      this.parent.updateBounding();
+    }
   };
 
-  public setBounding = (dx: number, dy: number): void => {
-    this.bounding.top += dy;
-    this.bounding.right += dx;
-    this.bounding.bottom += dy;
-    this.bounding.left += dx;
-  };
+  public updateBounding = (): void => {};
 
   public moveFig = (dx: number, dy: number) => {
     this.realCoordonates.x += dx;
@@ -93,13 +94,15 @@ export class GPoint implements IShape {
       this.bounding.top > viewBoxBounding.bottom);
   };
 
-  public isHovered = (mousePoint: Point2D): boolean => {
-    return isPointInCircle(mousePoint, this.realCoordonates, this.size);
+  public isHovered = (mousePoint: Point2D, radius?: number): IShape | null => {
+    const newRadius = radius ? this.size + radius : this.size;
+    if (isPointInCircle(mousePoint, this.realCoordonates, newRadius))
+      return this;
+    return null;
   };
 
   public draw = (ctx: CanvasRenderingContext2D) => {
     if (!this.isInViewBox) return;
-
     ctx.beginPath();
     ctx.arc(
       this.realCoordonates.x,
@@ -118,7 +121,7 @@ export class GPoint implements IShape {
     ctx.stroke();
     ctx.font = "15px Inter";
     ctx.fillText(
-      "A",
+      this.name,
       this.realCoordonates.x + this.size,
       this.realCoordonates.y - this.size
     );

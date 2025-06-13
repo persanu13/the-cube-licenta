@@ -1,5 +1,5 @@
 export type State = {
-  succes?: boolean;
+  success?: boolean;
   message?: string | null;
   errors?: {
     [key: string]: string[]; // array de mesaje de eroare pe fiecare câmp

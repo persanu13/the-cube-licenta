@@ -161,7 +161,7 @@ export const githubAuthCallback = async (req: Request, res: Response) => {
       });
 
       if (user) {
-        throw new NotFoundException(
+        throw new BadRequestException(
           "Email already used with a credential account.",
           ErrorCodes.USER_ALREADY_EXISTS
         );

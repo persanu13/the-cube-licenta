@@ -23,7 +23,6 @@ export default async function Layout({
       href: "/student/courses",
       iconName: "DocumentTextIcon",
     },
-    { name: "TEACHERS", href: "/student/teachers", iconName: "UsersIcon" },
     { name: "SETTINGS", href: "/student/settings", iconName: "Cog6ToothIcon" },
   ];
 
@@ -32,7 +31,7 @@ export default async function Layout({
     notFound();
   }
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen overflow-hidden bg-bej-100">
       <UserNav menuItems={menuItems} />
       {children}
     </div>
