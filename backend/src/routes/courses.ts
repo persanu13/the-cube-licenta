@@ -3,10 +3,12 @@ import { errorHandler } from "../error-handler";
 
 import authMiddleware from "../middlewares/auth";
 import {
+  countPublicCourses,
   createCourse,
   deleteCourse,
   getCourseById,
   getCourseContent,
+  getPublicCourses,
   getStudentCourses,
   getTeachersCourses,
   updateCourse,
@@ -35,12 +37,27 @@ coursesRouter.get(
 );
 
 coursesRouter.get(
+  "/public-course",
+  [authMiddleware],
+  errorHandler(getPublicCourses)
+);
+coursesRouter.get(
+  "/count-public-course",
+  [authMiddleware],
+  errorHandler(countPublicCourses)
+);
+
+coursesRouter.get(
   "/:courseId",
   [authMiddleware, teacherMiddleware],
   errorHandler(getCourseById)
 );
 
-coursesRouter.get("/:courseId/content", errorHandler(getCourseContent));
+coursesRouter.get(
+  "/:courseId/content",
+  [authMiddleware],
+  errorHandler(getCourseContent)
+);
 
 coursesRouter.patch(
   "/content",

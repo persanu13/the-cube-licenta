@@ -13,6 +13,7 @@ import Panel from "@/geometry_2d/components/panel";
 import StyleMenu from "./style-menu";
 import { PanelState } from "@/geometry_2d/Interfaces/types";
 import Link from "next/link";
+import Scene3D, { Scene3DState } from "@/components/threejs/scene3d";
 
 type ContentMakerProps = {
   courseId: string;
@@ -34,6 +35,7 @@ export default function ContentMaker({
       const aux = newContent[index - 1];
       newContent[index - 1] = newContent[index];
       newContent[index] = aux;
+
       setSelectedIndex(index - 1);
     }
     if (direction == "down") {
@@ -53,6 +55,19 @@ export default function ContentMaker({
     const updated = [...content];
     updated[selectedIndex] = item;
     setContent(updated);
+  };
+
+  const renderItem = (item: ContentTypes) => {
+    switch (item.type) {
+      case "TEXT":
+        return <CourseText text={item as TCourseText} />;
+      case "PANEL":
+        return <Panel panel={item as PanelState} />;
+      case "3DSHAPE":
+        return <Scene3D scene={item as Scene3DState} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -81,9 +96,6 @@ export default function ContentMaker({
                     }
                   : {}
               }
-              onClick={() => {
-                setSelectedIndex(index);
-              }}
             >
               {selectedIndex == index && (
                 <>
@@ -115,12 +127,13 @@ export default function ContentMaker({
                 </>
               )}
 
-              <div className="w-full">
-                {item.type === "TEXT" ? (
-                  <CourseText text={item as TCourseText} onChange={onChange} />
-                ) : (
-                  <Panel panel={item as PanelState} />
-                )}
+              <div
+                className="w-full"
+                onClick={() => {
+                  setSelectedIndex(index);
+                }}
+              >
+                {renderItem(item)}
               </div>
             </div>
           );

@@ -19,14 +19,10 @@ import clsx from "clsx";
 const generalItems = [
   { name: "Dashboard", href: "/admin", icon: Squares2X2Icon },
   { name: "Users", href: "/admin/users", icon: UsersIcon },
-  { name: "Lessons", href: "/admin/lessons", icon: ClipboardDocumentIcon },
   { name: "Statistics", href: "/admin/statistics", icon: ChartPieIcon },
 ];
 
-const toolsItems = [
-  { name: "User view", href: "/client", icon: EyeIcon },
-  { name: "Settings", href: "/admin/settings", icon: Cog6ToothIcon },
-];
+const toolsItems = [{ name: "User view", href: "/student", icon: EyeIcon }];
 
 export default function AdminNav() {
   const [state, action, isPending] = useActionState(signOut, null);

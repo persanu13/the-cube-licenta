@@ -9,4 +9,4 @@ export type State = {
   };
 };
 
-export type TContentType = "PANEL" | "TEXT";
+export type TContentType = "PANEL" | "TEXT" | "3DSHAPE";

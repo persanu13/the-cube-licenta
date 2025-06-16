@@ -15,13 +15,12 @@ export type TCourseText = {
 export default function CourseText({
   text,
   readonly,
-  onChange,
 }: {
   text: TCourseText;
   readonly?: boolean;
-  onChange?: (text: TCourseText) => void;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(text.value);
 
   const resize = () => {
     if (ref.current) {
@@ -48,10 +47,8 @@ export default function CourseText({
       placeholder={text.placeholder}
       value={text.value ?? ""}
       onChange={(e) => {
-        if (onChange) {
-          text.value = e.target.value;
-          onChange(text);
-        }
+        text.value = e.target.value;
+        setValue(text.value);
         resize();
       }}
     />

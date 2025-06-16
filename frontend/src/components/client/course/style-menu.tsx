@@ -3,6 +3,8 @@ import { ContentTypes } from "./content-maker";
 import StyleText from "./style-text";
 import { TCourseText } from "./text";
 import StylePanel from "./style-panel";
+import { Scene3DState } from "@/components/threejs/scene3d";
+import StyleShape3D from "./style-shape3d";
 
 export default function StyleMenu({
   selected,
@@ -18,13 +20,18 @@ export default function StyleMenu({
           const text = selected as TCourseText;
 
           return <StyleText key={text.id} text={text} onChange={onChange} />;
-
         case "PANEL":
           const panel = selected as PanelState;
           return (
             <StylePanel key={panel.id} panel={panel} onChange={onChange} />
           );
-          break;
+        case "3DSHAPE":
+          const scene = selected as Scene3DState;
+          return (
+            <StyleShape3D key={scene.id} scene={scene} onChange={onChange} />
+          );
+        default:
+          return null;
       }
   };
 

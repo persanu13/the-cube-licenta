@@ -69,9 +69,15 @@ export default function CourseCard({
                 day: "numeric",
               }).format(new Date(course.createdAt))}
             </p>
-            <p className="text-[12px] font-inter font-bold text-tuatara-400">
-              {course.visibility}
-            </p>
+            {course.autorName ? (
+              <p className="text-[12px] font-inter font-bold text-tuatara-400">
+                {course.autorName}
+              </p>
+            ) : (
+              <p className="text-[12px] font-inter font-bold text-tuatara-400">
+                {course.visibility}
+              </p>
+            )}
           </div>
 
           {menuItems.length > 0 ? (

@@ -2,6 +2,7 @@ import { PanelState } from "@/geometry_2d/Interfaces/types";
 import CourseText, { TCourseText } from "./text";
 import { Fragment } from "react";
 import Panel from "@/geometry_2d/components/panel";
+import Scene3D, { Scene3DState } from "@/components/threejs/scene3d";
 
 type CourseViewProps = {
   initialContent: ContentTypes[];
@@ -19,6 +20,8 @@ export default function CourseView({ initialContent }: CourseViewProps) {
       case "PANEL":
         const panel: PanelState = item as PanelState;
         return <Panel panel={panel}></Panel>;
+      case "3DSHAPE":
+        return <Scene3D scene={item as Scene3DState} />;
       default:
         return <></>;
     }

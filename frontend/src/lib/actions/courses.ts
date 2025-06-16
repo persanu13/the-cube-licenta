@@ -173,8 +173,61 @@ export async function fetchStudentCourses(
     if (!res.ok) return null;
 
     const courses = await res.json();
-    console.log(courses);
     return courses;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function fetchPublicCourses(
+  query: string,
+  subject: string,
+  page: number
+) {
+  try {
+    const token = await getToken();
+
+    const res = await fetch(
+      `${SERVER_URL}/api/courses/public-course?q=${query}&subject=${subject}&page=${page}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    if (!res.ok) return null;
+
+    const courses = await res.json();
+    return courses;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function countPublicCourses(query: string, subject: string) {
+  try {
+    const token = await getToken();
+
+    const res = await fetch(
+      `${SERVER_URL}/api/courses/count-public-course?q=${query}&subject=${subject}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data.count;
   } catch (e) {
     console.error(e);
   }
@@ -202,13 +255,18 @@ export async function fetchCourse(courseId: string) {
 
 export async function fetchCourseContent(courseId: string) {
   try {
+    const token = await getToken();
     const res = await fetch(`${SERVER_URL}/api/courses/${courseId}/content`, {
       method: "GET",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
-
     if (!res.ok) return null;
     const data = await res.json();
+
     return data;
   } catch (e) {
     console.error(e);

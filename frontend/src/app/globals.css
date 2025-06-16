@@ -217,3 +217,167 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.world {
+  background-color: #f2eee3;
+  height: 10em;
+  width: 10em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  perspective: 10em;
+  perspective-origin: 50% calc(50% - 2em);
+  clip-path: fill-box;
+}
+
+.scene {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.cube {
+  width: 2em;
+  height: 2em;
+  transform-style: preserve-3d;
+  position: absolute;
+  top: -1em;
+  left: -1em;
+}
+
+.floor {
+  position: absolute;
+  width: 12em;
+  height: 12em;
+  background-image: radial-gradient(#f2eee300, #f2eee3 50%),
+    repeating-conic-gradient(
+      from 45deg,
+      #f2eee3 0deg 90deg,
+      #6b665a 90deg 180deg
+    );
+  background-size: 100%, 1em 1em;
+  transform: translate(-50%, -50%) rotateX(90deg);
+  top: 1.5em;
+}
+
+.face {
+  transform: rotateY("angle") translateZ(1em);
+}
+
+.titlu h1 {
+  display: inline-block; /* Pentru ca transformările să se aplice corect */
+  transform-origin: center; /* Punctul de origine pentru scalare */
+  animation-timing-function: linear; /* Efect liniar ca în anime.js */
+}
+
+.titlu h1:hover {
+  animation: bounceScale 0.71s; /* Durata totală: 200+170+130+100+70+40 = 710ms */
+}
+
+@keyframes bounceScale {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  28.2% {
+    transform: scale(0.5, 1.4);
+  } /* 200/710 ≈ 28.2% */
+  52.1% {
+    transform: scale(1.2, 0.8);
+  } /* (200+170)/710 ≈ 52.1% */
+  70.4% {
+    transform: scale(0.7, 1.2);
+  } /* (200+170+130)/710 ≈ 70.4% */
+  84.5% {
+    transform: scale(1.1, 0.9);
+  } /* (200+170+130+100)/710 ≈ 84.5% */
+  94.4% {
+    transform: scale(0.9, 1.1);
+  } /* (200+170+130+100+70)/710 ≈ 94.4% */
+}
+
+/* lil-gui - personalizare generală */
+.lil-gui {
+  background-color: var(--bej-100) !important;
+  color: var(--charade-950) !important;
+  border: 1px solid #444 !important;
+  font-family: "Arial", sans-serif !important;
+  border-bottom-left-radius: 4px;
+}
+
+.lil-gui .title {
+  background-color: #333 !important;
+  color: var(--broom-400) !important;
+}
+
+.lil-gui input[type="text"],
+.lil-gui input[type="number"] {
+  background-color: var(--bej-100) !important;
+  color: var(--carnation-400) !important;
+  border: 1px solid #555 !important;
+}
+
+.lil-gui input[type="checkbox"] {
+  background-color: var(--broom-300) !important;
+  color: var(--charade-950) !important;
+  border: 1px solid #555 !important;
+}
+
+.lil-gui input[type="checkbox"]:hover {
+  background-color: var(--broom-200) !important;
+}
+
+.lil-gui input[type="color"] {
+  border-radius: 4px !important;
+}
+
+.lil-gui .slider {
+  background: var(--tuatara-900);
+  outline: 1 solid black;
+}
+
+.lil-gui .slider .fill {
+  background: var(--broom-300);
+}
+
+.lil-gui {
+  font-family: var(--font-hanuman) !important;
+  font-size: var(--font-size);
+  line-height: 1;
+  font-weight: normal;
+  font-style: normal;
+  text-align: left;
+  color: var(--text-color);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  --background-color: #1f1f1f;
+  --text-color: var(--carnation-400);
+  --title-background-color: #111111;
+  --title-text-color: #ebebeb;
+  --widget-color: var(--color-bej-50);
+  --hover-color: var(--color-bej-100);
+  --focus-color: var(--color-bej-100);
+  --number-color: var(--color-carnation-500);
+  --string-color: #a2db3c;
+  --font-size: 11px;
+  --input-font-size: 11px;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+    sans-serif;
+  --font-family-mono: Menlo, Monaco, Consolas, "Droid Sans Mono", monospace;
+  --padding: 4px;
+  --spacing: 4px;
+  --widget-height: 20px;
+  --title-height: calc(var(--widget-height) + var(--spacing) * 1.25);
+  --name-width: 45%;
+  --slider-knob-width: 2px;
+  --slider-input-width: 27%;
+  --color-input-width: 27%;
+  --slider-input-min-width: 45px;
+  --color-input-min-width: 45px;
+  --folder-indent: 7px;
+  --widget-padding: 0 0 0 3px;
+  --widget-border-radius: 2px;
+  --checkbox-size: calc(0.75 * var(--widget-height));
+  --scrollbar-width: 5px;
+}

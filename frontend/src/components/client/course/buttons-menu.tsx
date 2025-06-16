@@ -5,6 +5,8 @@ import { PanelState } from "@/geometry_2d/Interfaces/types";
 import { generateRandomPoints } from "@/geometry_2d/lib/utility/generate";
 import { Panel } from "@/geometry_2d/components/panel";
 import { v4 as uuidv4 } from "uuid";
+import { Scene3DState } from "@/components/threejs/scene3d";
+import { DefaultBox3D } from "@/components/threejs/shape-types";
 
 const BUTTONS = [
   {
@@ -56,7 +58,7 @@ const BUTTONS = [
     name: "Canvas",
     fct: (content: any[], setContent: Dispatch<SetStateAction<any[]>>) => {
       const newCanvas: PanelState = {
-        id: "cadsfasddsa234",
+        id: uuidv4(),
         type: "PANEL",
         width: 300,
         height: 300,
@@ -64,6 +66,19 @@ const BUTTONS = [
         shapesData: [],
       };
       setContent([...content, newCanvas]);
+    },
+  },
+  {
+    name: "Shape3D",
+    fct: (content: any[], setContent: Dispatch<SetStateAction<any[]>>) => {
+      const newScene3D: Scene3DState = {
+        id: uuidv4(),
+        type: "3DSHAPE",
+        width: 500,
+        height: 500,
+        shape: DefaultBox3D,
+      };
+      setContent([...content, newScene3D]);
     },
   },
 ];

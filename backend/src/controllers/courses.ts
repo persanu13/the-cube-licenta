@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prismaClient } from "..";
 import { CourseSchema } from "../schema/course";
-import { PrismaClient, Subject, Visibility } from "@prisma/client";
+import { Subject, Visibility } from "@prisma/client";
 import { UnauthorizedException } from "../exceptions/unauthorized";
 import { ErrorCodes } from "../exceptions/root";
 import { BadRequestException } from "../exceptions/bad-request";
@@ -33,7 +33,7 @@ export const getPublicCourses = async (req: Request, res: Response) => {
       ? ((req.query.subject as string)?.toUpperCase() as Subject)
       : null;
 
-  const searchQuery = req.query.q as string | undefined;
+  const searchQuery = (req.query.q as string)?.trim().toLowerCase();
 
   const courses = await prismaClient.course.findMany({
     where: {
@@ -48,7 +48,7 @@ export const getPublicCourses = async (req: Request, res: Response) => {
     orderBy: {
       createdAt: "desc",
     },
-    skip: 10 * page,
+    skip: 10 * (page - 1),
     take: 10,
     select: {
       id: true,
@@ -60,10 +60,77 @@ export const getPublicCourses = async (req: Request, res: Response) => {
       color: true,
       createdAt: true,
       updatedAt: true,
+      creator: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 
-  res.json(courses);
+  const filteredCourses = courses.filter((course) => {
+    if (!searchQuery) return true;
+    const creatorName = course.creator?.name?.toLowerCase() || "";
+    return (
+      course.name.toLowerCase().includes(searchQuery) ||
+      creatorName.includes(searchQuery)
+    );
+  });
+
+  const result = filteredCourses.map((course) => ({
+    id: course.id,
+    name: course.name,
+    min_grade: course.min_grade,
+    max_grade: course.max_grade,
+    subject: course.subject,
+    visibility: course.visibility,
+    color: course.color,
+    createdAt: course.createdAt.toISOString(),
+    updatedAt: course.updatedAt?.toISOString(),
+    autorName: course.creator?.name || undefined,
+  }));
+
+  res.json(result);
+};
+
+export const countPublicCourses = async (req: Request, res: Response) => {
+  const subject =
+    (req.query.subject as string)?.toUpperCase() in Subject
+      ? ((req.query.subject as string)?.toUpperCase() as Subject)
+      : null;
+
+  const searchQuery = (req.query.q as string)?.trim().toLowerCase();
+
+  const courses = await prismaClient.course.findMany({
+    where: {
+      AND: [
+        subject ? { subject } : {},
+        { visibility: "PUBLIC" },
+        searchQuery
+          ? { name: { contains: searchQuery, mode: "insensitive" } }
+          : {},
+      ],
+    },
+    select: {
+      name: true,
+      creator: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const count = courses.filter((course) => {
+    if (!searchQuery) return true;
+    const creatorName = course.creator?.name?.toLowerCase() || "";
+    return (
+      course.name.toLowerCase().includes(searchQuery) ||
+      creatorName.includes(searchQuery)
+    );
+  }).length;
+
+  res.json({ count });
 };
 
 export const getTeachersCourses = async (req: Request, res: Response) => {
@@ -114,7 +181,7 @@ export const getStudentCourses = async (req: Request, res: Response) => {
     (req.query.subject as string)?.toUpperCase() in Subject
       ? ((req.query.subject as string)?.toUpperCase() as Subject)
       : null;
-  const searchQuery = req.query.q as string | undefined;
+  const searchQuery = (req.query.q as string)?.trim().toLowerCase();
   const studentId = req.query.studentId as string | undefined;
 
   if (!studentId) {
@@ -131,12 +198,22 @@ export const getStudentCourses = async (req: Request, res: Response) => {
           courses: {
             where: {
               ...(subject && { subject }),
-              ...(searchQuery && {
-                name: {
-                  contains: searchQuery,
-                  mode: "insensitive",
+            },
+            select: {
+              id: true,
+              name: true,
+              min_grade: true,
+              max_grade: true,
+              subject: true,
+              visibility: true,
+              color: true,
+              createdAt: true,
+              updatedAt: true,
+              creator: {
+                select: {
+                  name: true,
                 },
-              }),
+              },
             },
           },
         },
@@ -149,7 +226,29 @@ export const getStudentCourses = async (req: Request, res: Response) => {
   }
 
   const allCourses = studentWithGroupsAndCourses.studentGroups.flatMap(
-    (group) => group.courses
+    (group) =>
+      group.courses
+        .filter((course) => {
+          if (!searchQuery) return true;
+          const courseName = course.name.toLowerCase();
+          const creatorName = course.creator?.name?.toLowerCase() || "";
+          return (
+            courseName.includes(searchQuery) ||
+            creatorName.includes(searchQuery)
+          );
+        })
+        .map((course) => ({
+          id: course.id,
+          name: course.name,
+          min_grade: course.min_grade,
+          max_grade: course.max_grade,
+          subject: course.subject,
+          visibility: course.visibility,
+          color: course.color,
+          createdAt: course.createdAt.toISOString(),
+          updatedAt: course.updatedAt?.toISOString(),
+          autorName: course.creator?.name || undefined,
+        }))
   );
 
   res.json(allCourses);
@@ -158,11 +257,7 @@ export const getStudentCourses = async (req: Request, res: Response) => {
 export const getCourseContent = async (req: Request, res: Response) => {
   const { courseId } = req.params;
 
-  let userId = "";
-  if (req.user) {
-    let userId = req.user.id;
-  }
-
+  const userId = req.user.id;
   const course = await prismaClient.course.findFirst({
     where: {
       id: courseId,
@@ -184,8 +279,6 @@ export const getCourseContent = async (req: Request, res: Response) => {
       content: true,
     },
   });
-
-  console.log(course);
 
   if (!course) {
     throw new UnauthorizedException(
