@@ -2,6 +2,7 @@
 
 import { GCanvasManager } from "../lib/canvas-manager";
 import { isPointOnThickSegment } from "../lib/utility/shape-detection";
+import { hexToRGBA } from "../lib/utility/utility";
 
 import { Bounding, IShape, Point2D, ShapeType, TShape } from "./figurine";
 import { GPoint, TPoint } from "./gpoint";
@@ -129,6 +130,12 @@ export class GLine implements IShape {
     ctx.moveTo(this.start.realCoordonates.x, this.start.realCoordonates.y);
     ctx.lineTo(this.end.realCoordonates.x, this.end.realCoordonates.y);
     ctx.closePath();
+
+    if (this.isSelected) {
+      ctx.lineWidth = this.strokeWidth + 4;
+      ctx.strokeStyle = hexToRGBA(this.color, 0.8);
+      ctx.stroke();
+    }
 
     ctx.lineWidth = this.strokeWidth;
     ctx.strokeStyle = "#000";

@@ -9,6 +9,7 @@ export type TAction =
   | "add_square"
   | "add_polygon"
   | "add_path"
+  | "add_shape_path"
   | "delete";
 
 export type PanelState = {

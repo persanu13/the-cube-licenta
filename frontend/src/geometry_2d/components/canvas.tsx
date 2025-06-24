@@ -13,6 +13,7 @@ import { GLine } from "../Interfaces/gline";
 import { GPolygon } from "../Interfaces/gpolygone";
 import { GPath } from "../Interfaces/gpath";
 import { processFreehandPath } from "../lib/utility/utility";
+import { classifyShape } from "../lib/utility/shape-recognition";
 
 export default function Canvas() {
   //console.log("rerender canvas2D");
@@ -30,6 +31,9 @@ export default function Canvas() {
   const setShapes = useCanvasStore((s) => s.setShapes);
   const addShape = useCanvasStore((s) => s.addShape);
   const removeShape = useCanvasStore((s) => s.removeShape);
+
+  const getLetter = useCanvasStore((s) => s.getLetter);
+  const color = useCanvasStore((s) => s.color);
 
   const selectedShapes = useCanvasStore((s) => s.selectedShapes);
   const setSelectedShapes = useCanvasStore((s) => s.setSelectedShapes);
@@ -142,8 +146,10 @@ export default function Canvas() {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseup", end);
 
-      if (hovered) canvasManager.current?.updateVirtual([hovered]);
-
+      if (hovered) {
+        canvasManager.current?.updateVirtual([hovered]);
+        setSelectedShapes([hovered]);
+      }
       setShapes([...shapes]);
       setIsMouseDown(false);
     };
@@ -162,8 +168,8 @@ export default function Canvas() {
         canvasManager.current.toVirtualPoint(mouseCoordonate);
       const newPoint = new GPoint({
         id: uuidv4(),
-        name: "A",
-        color: "#F83B3B",
+        name: getLetter(),
+        color: color,
         size: 5,
         coordonates: newPointCoordonate,
       });
@@ -188,15 +194,15 @@ export default function Canvas() {
       canvasManager.current.toVirtualPoint(mouseCoordonate);
     const start: TPoint = {
       id: uuidv4(),
-      name: "A",
-      color: "#F83B3B",
+      name: getLetter(),
+      color: color,
       size: 5,
       coordonates: newPointCoordonate,
     };
     const end: TPoint = {
       id: uuidv4(),
-      name: "B",
-      color: "#F83B3B",
+      name: getLetter(),
+      color: color,
       size: 5,
       coordonates: newPointCoordonate,
     };
@@ -204,7 +210,7 @@ export default function Canvas() {
     const newLine = new GLine({
       id: uuidv4(),
       name: "A",
-      color: "#000",
+      color: color,
       strokeWidth: 2,
       start: start,
       end: end,
@@ -251,15 +257,15 @@ export default function Canvas() {
 
     const start: TPoint = {
       id: uuidv4(),
-      name: "A",
-      color: "#F83B3B",
+      name: getLetter(),
+      color: color,
       size: 5,
       coordonates: newPointCoordonate,
     };
     const end: TPoint = {
       id: uuidv4(),
-      name: "B",
-      color: "#F83B3B",
+      name: getLetter(),
+      color: color,
       size: 5,
       coordonates: newPointCoordonate,
     };
@@ -267,7 +273,7 @@ export default function Canvas() {
     const newPolygon = new GPolygon({
       id: uuidv4(),
       name: "A",
-      color: "#000",
+      color: color,
       strokeWidth: 2,
       points: [start, end],
     });
@@ -284,7 +290,7 @@ export default function Canvas() {
 
       if (
         newPolygon.points.length > 2 &&
-        newPolygon.points[0].isHovered(mouseCoordonate, 5)
+        newPolygon.points[0].isHovered(mouseCoordonate)
       ) {
         const target = newPolygon.points.at(0)?.realCoordonates;
         if (target) {
@@ -310,7 +316,7 @@ export default function Canvas() {
 
       if (
         newPolygon.points.length > 2 &&
-        newPolygon.points[0].isHovered(mouseCoordonate, 5)
+        newPolygon.points[0].isHovered(mouseCoordonate)
       ) {
         addShapeNow.current = false;
         newPolygon.points.pop();
@@ -325,8 +331,8 @@ export default function Canvas() {
         canvasManager.current.toVirtualPoint(mouseCoordonate);
       const newPoint: TPoint = {
         id: uuidv4(),
-        name: "C",
-        color: "#F83B3B",
+        name: getLetter(),
+        color: color,
         size: 5,
         coordonates: newPointCoordonate,
       };
@@ -352,7 +358,7 @@ export default function Canvas() {
     const newPath = new GPath({
       id: uuidv4(),
       name: "A",
-      color: "#F83B3B",
+      color: color,
       strokeWidth: 3,
       points: [newPointCoordonate],
     });
@@ -375,14 +381,30 @@ export default function Canvas() {
       if (!canvasManager.current) return;
       setIsMouseDown(false);
 
-      newPath.realPoints = processFreehandPath(newPath.realPoints);
-      newPath.points = [];
-      for (let p of newPath.realPoints) {
-        newPath.points.push(canvasManager.current.toVirtualPoint(p));
+      if (action == "add_shape_path") {
+        const shapePath = classifyShape(newPath.realPoints.slice());
+        if (shapePath) {
+          newPath.realPoints = shapePath;
+          newPath.points = [];
+          for (let p of newPath.realPoints) {
+            newPath.points.push(canvasManager.current.toVirtualPoint(p));
+          }
+          newPath.updateBounding();
+          setShapes([...shapes, newPath]);
+        } else {
+          setShapes([...shapes]);
+        }
       }
-      newPath.updateBounding();
 
-      setShapes([...shapes, newPath]);
+      if (action == "add_path") {
+        newPath.realPoints = processFreehandPath(newPath.realPoints);
+        newPath.points = [];
+        for (let p of newPath.realPoints) {
+          newPath.points.push(canvasManager.current.toVirtualPoint(p));
+        }
+        newPath.updateBounding();
+        setShapes([...shapes, newPath]);
+      }
 
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mouseup", end);
@@ -433,6 +455,9 @@ export default function Canvas() {
         addPolygon(e);
         break;
       case "add_path":
+        addPath(e);
+        break;
+      case "add_shape_path":
         addPath(e);
         break;
       case "delete":

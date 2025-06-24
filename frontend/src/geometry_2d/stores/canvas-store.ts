@@ -29,6 +29,9 @@ export type CanvasStoreState = {
   history: ShapeDelta[];
   future: ShapeDelta[];
 
+  letter: string;
+  color: string;
+
   setAction: (action: TAction) => void;
 
   setFullscreen: (newState: boolean) => void;
@@ -36,8 +39,10 @@ export type CanvasStoreState = {
   moveViewBox: (dx: number, dy: number) => void;
   zoomViewBox: (delta: number, centerX: number, centerY: number) => void;
 
-  setShapes: (shapes: IShape[]) => void;
+  getLetter: () => string;
+  setColor: (color: string) => void;
 
+  setShapes: (shapes: IShape[]) => void;
   addShape: (shape: IShape) => void;
   removeShape: (shape: IShape) => void;
   updateShape: (before: IShape, after: IShape) => void;
@@ -53,6 +58,8 @@ export const createCanvasStore = () => {
     action: "move_select_fig",
     fullscreen: false,
     shapes: [],
+    letter: "A",
+    color: "#00b3ff",
     selectedShapes: [],
     viewBox: new ViewBox(),
     viewBoxState: { x: 0, y: 0, width: 0, height: 0, scale: 1 },
@@ -127,6 +134,20 @@ export const createCanvasStore = () => {
           future: [],
         };
       }),
+
+    getLetter: () => {
+      const current = get().letter;
+      const next = String.fromCharCode(current.charCodeAt(0) + 1);
+
+      if (current !== "Z") {
+        set({ letter: next });
+      } else {
+        set({ letter: "A" });
+      }
+      return current;
+    },
+
+    setColor: (color: string) => set({ color }),
 
     setSelectedShapes: (shapes: IShape[]) =>
       set((state) => {

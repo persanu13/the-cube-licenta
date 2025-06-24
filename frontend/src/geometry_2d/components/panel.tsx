@@ -52,7 +52,7 @@ export function Panel({ width = 600, height = 400 }: PanelProps) {
   return (
     <div
       ref={panelRef}
-      className="flex border-2 mt-2 border-charade-950 rounded-md w-fit"
+      className="flex border-2 mt-2 border-charade-950 rounded-md w-fit shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
     >
       <div
         className="flex flex-col relative justify-end  items-center"

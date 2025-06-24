@@ -2,6 +2,7 @@
 
 import { GCanvasManager } from "../lib/canvas-manager";
 import { isPointInCircle } from "../lib/utility/shape-detection";
+import { darkenColor, hexToRGBA } from "../lib/utility/utility";
 
 import { Bounding, IShape, Point2D, ShapeType, TShape } from "./figurine";
 
@@ -94,9 +95,8 @@ export class GPoint implements IShape {
       this.bounding.top > viewBoxBounding.bottom);
   };
 
-  public isHovered = (mousePoint: Point2D, radius?: number): IShape | null => {
-    const newRadius = radius ? this.size + radius : this.size;
-    if (isPointInCircle(mousePoint, this.realCoordonates, newRadius))
+  public isHovered = (mousePoint: Point2D): IShape | null => {
+    if (isPointInCircle(mousePoint, this.realCoordonates, this.size + 3))
       return this;
     return null;
   };
@@ -111,15 +111,20 @@ export class GPoint implements IShape {
       0,
       2 * Math.PI
     );
+    if (this.isSelected) {
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = hexToRGBA(this.color, 0.6);
+      ctx.stroke();
+    }
 
-    ctx.fillStyle = this.isSelected ? "#383838" : this.color;
-
+    ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#000";
     ctx.stroke();
     ctx.font = "15px Inter";
+    ctx.fillStyle = darkenColor(this.color, 0.6);
     ctx.fillText(
       this.name,
       this.realCoordonates.x + this.size,

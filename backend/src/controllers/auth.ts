@@ -15,14 +15,11 @@ import { LoginSchema, SignUpSchema } from "../schema/user";
 import { NotFoundException } from "../exceptions/not-found";
 
 //Sign up functie de creare cont
-export const signUp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const signUp = async (req: Request, res: Response) => {
   SignUpSchema.parse(req.body);
 
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
+  console.log(req.body);
 
   let user = await prismaClient.user.findFirst({ where: { email } });
   if (user) {
@@ -37,6 +34,7 @@ export const signUp = async (
       name,
       email,
       password: hashSync(password, 10),
+      role,
     },
   });
 
@@ -44,7 +42,6 @@ export const signUp = async (
   res.json(safeUser);
 };
 
-// Sign In functie de login cu email, parola
 export const signIn = async (req: Request, res: Response) => {
   LoginSchema.parse(req.body);
 

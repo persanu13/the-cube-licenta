@@ -2,6 +2,7 @@
 
 import { GCanvasManager } from "../lib/canvas-manager";
 import { isPointNearPolyline } from "../lib/utility/shape-detection";
+import { hexToRGBA } from "../lib/utility/utility";
 import { Bounding, IShape, Point2D, ShapeType, TShape } from "./figurine";
 
 export type TPath = TShape & {
@@ -98,7 +99,7 @@ export class GPath implements IShape {
   };
 
   public isHovered = (mousePoint: Point2D): IShape | null => {
-    if (isPointNearPolyline(mousePoint, this.realPoints, this.strokeWidth))
+    if (isPointNearPolyline(mousePoint, this.realPoints, this.strokeWidth + 5))
       return this;
     return null;
   };
@@ -113,6 +114,12 @@ export class GPath implements IShape {
     }
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
+
+    if (this.isSelected) {
+      ctx.lineWidth = this.strokeWidth + 3;
+      ctx.strokeStyle = hexToRGBA("#000000", 0.6);
+      ctx.stroke();
+    }
     ctx.lineWidth = this.strokeWidth;
     ctx.strokeStyle = this.color;
     ctx.stroke();

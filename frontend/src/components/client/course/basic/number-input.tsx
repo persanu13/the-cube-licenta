@@ -14,17 +14,21 @@ export default function NumberInput({
   id,
   label,
   defaultValue,
-  min = 0,
-  max = 10000,
+  min,
+  max,
   onChange,
 }: NumberInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
-    const clamped = Math.min(max, Math.max(min, value));
-    e.target.value = clamped.toString();
-    onChange(clamped);
+    if (min && max) {
+      const clamped = Math.min(max, Math.max(min, value));
+      e.target.value = clamped.toString();
+      onChange(clamped);
+    } else {
+      onChange(Number(e.target.value));
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

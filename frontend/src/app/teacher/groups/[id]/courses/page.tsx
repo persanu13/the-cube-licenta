@@ -6,9 +6,16 @@ import { fetchTheachersCourses } from "@/lib/actions/courses";
 import { fetchGroup, fetchGroupCourses } from "@/lib/actions/groups";
 import { Course } from "@/lib/models/course";
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{
+    query?: string;
+  }>;
+}) {
   const params = await props.params;
   const groupId = params.id;
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
   const group = await fetchGroup(groupId);
   const teacherCourses: Course[] = await fetchTheachersCourses("", "", "");
   const courses: Course[] = await fetchGroupCourses(groupId);
@@ -31,7 +38,12 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
             placeholder="Search group..."
           />
         </div>
-        <CoursesContainer courses={courses} groupId={groupId} />
+        <CoursesContainer
+          courses={courses.filter((course) =>
+            course.name.toLowerCase().includes(query.toLowerCase())
+          )}
+          groupId={groupId}
+        />
       </div>
     </main>
   );

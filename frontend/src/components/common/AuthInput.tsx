@@ -57,7 +57,7 @@ export default function Input({
         <div>
           {errors.map((eroor, index) => {
             return (
-              <p key={index} className="text-carnation-600 font-light font-">
+              <p key={index} className="text-carnation-600 font-light">
                 {eroor}
               </p>
             );

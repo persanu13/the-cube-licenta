@@ -20,6 +20,9 @@ export const RegisterSchema = z
         "Password must contain at least one special character."
       ),
     confirmPassword: z.string(),
+    role: z.enum(["STUDENT", "TEACHER"], {
+      errorMap: () => ({ message: "Role must be Student or Teacher" }),
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

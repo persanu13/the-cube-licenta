@@ -7,17 +7,11 @@ import DeleteStudentButton from "./delete-student-button";
 
 export default async function StudentsTable({
   groupId,
-  query,
-  currentPage,
-  rows,
+  students,
 }: {
   groupId: string;
-  query: string;
-  currentPage: number;
-  rows: number;
+  students: User[];
 }) {
-  const users: User[] = await fetchGroupStudents(groupId);
-
   return (
     <table className=" w-full flex flex-1 flex-col gap-[4px]  overflow-auto ">
       <thead className="sticky top-0 bg-spring-white z-10">
@@ -29,7 +23,7 @@ export default async function StudentsTable({
         </tr>
       </thead>
       <tbody className="flex flex-col gap-[4px]">
-        {users?.map((user) => (
+        {students?.map((user) => (
           <tr
             key={user.id}
             className="flex items-center  gap-1 py-[8px] border-t-[4px] border-[#FFFAFA]"

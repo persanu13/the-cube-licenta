@@ -22,7 +22,7 @@ export default function RegisterForm() {
             icon="user"
             required={true}
             type="text"
-            defaultValue={state.values?.name}
+            defaultValue={state.values?.name.toString()}
             errors={state.errors?.name}
           />
           <AuthInput
@@ -32,7 +32,7 @@ export default function RegisterForm() {
             icon="at"
             required={true}
             type="email"
-            defaultValue={state.values?.email}
+            defaultValue={state.values?.email.toString()}
             errors={state.errors?.email}
           />
           <AuthInput
@@ -53,7 +53,65 @@ export default function RegisterForm() {
             type="password"
             errors={state.errors?.confirmPassword}
           />
+
+          {/* User role */}
+          <fieldset
+            className="flex flex-col gap-1 "
+            aria-describedby="subject-error"
+          >
+            <legend className="font-hanuman text-charade-950 text-sm ">
+              User role
+              <span className="text-carnation-600 ml-[2px]">*</span>
+            </legend>
+            <div className="flex gap-3 mt-1">
+              <div className="flex items-center gap-1">
+                <label
+                  htmlFor="teacher"
+                  className="text-[14px] cursor-pointer font-hanuman text-charade-950"
+                >
+                  Teacher
+                </label>
+                <input
+                  id="teacher"
+                  name="role"
+                  type="radio"
+                  value="TEACHER"
+                  className="h-4 w-4 cursor-pointer"
+                />
+              </div>
+              <div className="flex items-center gap-1">
+                <label
+                  htmlFor="student"
+                  className="text-[14px] cursor-pointer font-hanuman text-charade-950"
+                >
+                  Student
+                </label>
+                <input
+                  id="student"
+                  name="role"
+                  type="radio"
+                  value="STUDENT"
+                  className="h-4 w-4 cursor-pointer "
+                />
+              </div>
+            </div>
+            {state.errors?.role && state.errors?.role.length > 0 && (
+              <div>
+                {state.errors.role.map((eroor, index) => {
+                  return (
+                    <p
+                      key={index}
+                      className="text-carnation-600 font-light font-hanuman text-[14px]"
+                    >
+                      {eroor}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
+          </fieldset>
         </div>
+
         {state.message && (
           <div
             className="flex items-center gap-1 px-1 mt-1"

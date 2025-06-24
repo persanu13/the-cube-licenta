@@ -12,14 +12,6 @@ export default async function Page() {
         <div className="flex flex-col px-5 py-2 gap-4 bg-spring-white rounded shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
           <h2 className="font-hanuman text-[18px]">Personal Information </h2>
           <UpdateUserForm user={user} />
-          <div>
-            <button
-              type="submit"
-              className="px-3 py-[6px] bg-border cursor-pointer rounded-[4px] text-[16px] font-inter font-semibold text-bej-100 shadow-[0_4px_4px_rgba(0,0,0,0.25)] hover:opacity-80"
-            >
-              Get Teacher Role
-            </button>
-          </div>
         </div>
       </div>
     </main>

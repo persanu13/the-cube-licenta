@@ -15,11 +15,13 @@ export async function signUp(
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
+    role: formData.get("role"),
   });
   const resendValues = {
     name: formData.get("name")?.toString() || "",
     email: formData.get("email")?.toString() || "",
   };
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -28,7 +30,7 @@ export async function signUp(
     };
   }
 
-  const { name, email, password, confirmPassword } = validatedFields.data;
+  const { name, email, password, confirmPassword, role } = validatedFields.data;
 
   try {
     const res = await fetch(`${SERVER_URL}/api/auth/signup`, {
@@ -42,6 +44,7 @@ export async function signUp(
         email: email,
         password: password,
         confirmPassword: confirmPassword,
+        role,
       }),
     });
 
@@ -110,6 +113,63 @@ export async function countUsers(query: string, role: string) {
     if (!res.ok) return null;
     const users = await res.json();
     return users;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getRoleCounts() {
+  try {
+    const token = await getToken();
+    const res = await fetch(`${SERVER_URL}/api/users/role-count`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    const statistics = await res.json();
+    return statistics;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getWeeklyUserCount() {
+  try {
+    const token = await getToken();
+    const res = await fetch(`${SERVER_URL}/api/users/weekly-count`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    const statistics = await res.json();
+    return statistics;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function getMonthlyUserCount() {
+  try {
+    const token = await getToken();
+    const res = await fetch(`${SERVER_URL}/api/users/monthly-count`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+    if (!res.ok) return null;
+    const statistics = await res.json();
+    return statistics;
   } catch (e) {
     console.error(e);
   }

@@ -2,6 +2,7 @@
 
 import { GCanvasManager } from "../lib/canvas-manager";
 import { isPointInPolygon } from "../lib/utility/shape-detection";
+import { darkenColor, hexToRGBA } from "../lib/utility/utility";
 import { Bounding, IShape, Point2D, ShapeType, TShape } from "./figurine";
 import { GLine } from "./gline";
 import { GPoint, TPoint } from "./gpoint";
@@ -138,11 +139,17 @@ export class GPolygon implements IShape {
     );
     ctx.closePath();
 
+    if (this.isSelected) {
+      ctx.lineWidth = this.strokeWidth + 4;
+      ctx.strokeStyle = hexToRGBA(this.color, 0.8);
+      ctx.stroke();
+    }
+
     ctx.lineWidth = this.strokeWidth;
     ctx.strokeStyle = "#000";
     ctx.stroke();
 
-    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    ctx.fillStyle = hexToRGBA(this.color, 0.6);
     ctx.fill();
 
     for (let p of this.points) {

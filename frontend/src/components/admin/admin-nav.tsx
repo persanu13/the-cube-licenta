@@ -19,7 +19,6 @@ import clsx from "clsx";
 const generalItems = [
   { name: "Dashboard", href: "/admin", icon: Squares2X2Icon },
   { name: "Users", href: "/admin/users", icon: UsersIcon },
-  { name: "Statistics", href: "/admin/statistics", icon: ChartPieIcon },
 ];
 
 const toolsItems = [{ name: "User view", href: "/student", icon: EyeIcon }];

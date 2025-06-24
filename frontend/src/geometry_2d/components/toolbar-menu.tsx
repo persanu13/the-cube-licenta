@@ -30,6 +30,7 @@ const shapeMenu: TMenuItem[] = [
 
 const penMenu: TMenuItem[] = [
   { icon: "pen", action: "add_path", variant: "stroke" },
+  { icon: "transparent_square", action: "add_shape_path", variant: "stroke" },
   { icon: "eraser", action: "delete", variant: "fill" },
 ];
 
