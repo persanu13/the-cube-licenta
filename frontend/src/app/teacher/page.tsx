@@ -11,9 +11,10 @@ import {
   fetchTheachersCourses,
 } from "@/lib/actions/courses";
 import CourseCard from "@/components/client/course-card";
-import CoursesContainer from "@/components/client/teacher/cards-container";
 import Select from "@/components/common/select";
 import Pagination from "@/components/admin/pagination";
+import CoursesContainerStudent from "@/components/client/student/courses-container";
+import CoursesContainerTeacher from "@/components/client/teacher/cards-container";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -49,7 +50,7 @@ export default async function Page(props: {
             />
           </div>
         </div>
-        <CoursesContainer courses={courses} />
+        <CoursesContainerStudent courses={courses} teacher={true} />
         <Pagination totalPages={Math.ceil(totalCourses / 10)} />
       </div>
       <div className="flex flex-col gap-5  w-full pnpmx-auto bg-spring-white px-5 py-6 rounded shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
@@ -63,7 +64,7 @@ export default async function Page(props: {
       </div>
       <div className="flex flex-col gap-5  w-full mx-auto bg-spring-white px-5 py-6 rounded shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
         <h1 className="font-hanuman text-[20px]">My Courses</h1>
-        <CoursesContainer courses={myCourses}></CoursesContainer>
+        <CoursesContainerTeacher courses={myCourses}></CoursesContainerTeacher>
       </div>
     </main>
   );

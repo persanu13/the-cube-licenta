@@ -30,6 +30,7 @@ export default async function Layout({
   if (!auth || (auth.role !== "STUDENT" && auth.role !== "ADMIN")) {
     notFound();
   }
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-bej-100">
       <UserNav menuItems={menuItems} />

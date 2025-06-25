@@ -14,11 +14,13 @@ type MenuItem = {
 type CourseCardProps = {
   course: Course;
   menuItems?: MenuItem[];
+  teacher?: boolean;
 };
 
 export default function CourseCard({
   course,
   menuItems = [],
+  teacher,
 }: CourseCardProps) {
   const [menuVisibility, setMenuVisibility] = useState(false);
 
@@ -109,11 +111,17 @@ export default function CourseCard({
             </div>
           ) : (
             <div>
-              <Link href={`/student/courses/${course.id}/`}>
+              <Link
+                href={
+                  teacher
+                    ? `/teacher/courses/${course.id}/view`
+                    : `/student/courses/${course.id}/`
+                }
+              >
                 <EyeIcon
                   width={24}
                   strokeWidth={2}
-                  className=" text-tuatara-900 hover:text-charade-950"
+                  className="text-tuatara-900 hover:text-charade-950"
                 ></EyeIcon>
               </Link>
             </div>
