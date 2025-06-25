@@ -22,7 +22,6 @@ export default async function Page(props: {
     page?: number;
   }>;
 }) {
-  const auth = await getAuth();
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const subject = searchParams?.subject || "";
